@@ -1,0 +1,224 @@
+body {
+    margin: 0;
+    width: 600px;
+
+    font-family: "Smythe", sans-serif;
+    
+} 
+
+main{
+    width: 525px;
+    margin: auto;
+    margin-bottom: 30px;
+}
+
+
+
+/* LAYOUT */
+
+.menu-item,
+.sum-line, 
+.ordered-item,
+.discount-code-div{
+    display:flex;
+    align-items: center;
+}
+
+.sum-line, 
+.ordered-item, 
+.total-sum{
+    justify-content: space-between; 
+}
+
+.discount-code-div{
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.menu-item{
+    border-bottom: 1.5px solid #d2d2d2;
+    padding: 30px 0px 30px 0px;
+}
+
+.modal form{
+    display: flex; 
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+}
+
+.discount-code-div{
+    margin-top: 15px;
+}
+
+.ordered-item-price, 
+.add-item-btn{
+    margin-left: auto;
+}
+
+.item-info h1{
+    margin-bottom: 0px;
+}
+
+.order-section h1{
+    text-align: center;
+    margin-top: 45px;
+    margin-bottom: 30px;
+}
+
+.item-info p{
+    margin-top: 2px;
+    margin-bottom: 14px;
+}
+
+.order-list{
+    border-bottom: 2px solid black;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
+.remove-ordered-item,
+.ordered-item-name{
+    margin-left: 10px;
+}
+
+
+
+/* IMAGES, ICONS, BUTTONS, INPUT FORMATTING */
+
+.item-img{
+    width: 80px;
+    height: 80px;
+    padding-right: 30px;
+}
+
+.btn,
+.add-item-btn, 
+.close-modal{
+    cursor: pointer;
+}
+
+.btn{
+    background-color: #16DB99;
+    border: none; 
+    color: white; 
+    border-radius: 3px;
+    width: 100%;
+    padding: 20px;
+    font-weight: bold;
+    margin-top: 30px; 
+}
+
+.btn:disabled, 
+form:invalid button{
+    background-color: rgb(219, 219, 219);
+    color: #757575;
+    cursor: not-allowed;
+}
+
+.add-discount-btn,
+.discount-code-div input{
+    padding: 5px 10px; 
+    border-radius: 12px;
+}
+
+.add-discount-btn{
+    background-color: #16DB99;
+    border: none;
+}
+
+.discount-code-div input{
+    border: 1px solid black; 
+}
+
+
+
+/* TYPOGRAPHY */
+
+.modal, 
+.btn, 
+.discount-code-div,
+.remove-ordered-item{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+h1, 
+.ordered-item, 
+.total-sum{
+    font-size: 28px;
+    font-weight: 400;
+}
+
+.item-price, 
+.ordered-item-price, 
+.order-sum,
+.discount-sum, 
+.modal{
+    font-size: 20px;
+}
+
+.item-ingredient-list,
+.btn{
+    font-size: 16px;
+}
+
+.remove-ordered-item,
+.discount-code-div{
+    font-size: 12px;
+}
+
+.item-ingredient-list,
+.remove-ordered-item{
+    color: #BBBBBB;
+}
+
+
+
+/* SPECIAL FORMATTING CLASSES */
+
+.display-none{
+    display: none;
+}
+
+.error-msg{
+    color: #de4646;
+}
+
+.input-error{
+    border: 1px solid #de4646;
+    background-color: #ffd8d8;
+}
+
+
+
+/* MODAL */
+
+.modal{
+    background-color: white;
+    text-align: center;
+    padding: 20px;
+    width: 490px;
+    position: fixed;
+    top: 260;
+    left: 35;
+    box-shadow: 0 0 150px 0px black;
+}
+
+.modal h1{
+    margin-bottom: 45px;
+    margin-top: 35px;
+}
+
+.modal input{
+    padding: 20px;
+    border-radius: 4px;
+    border: 1px solid #757575;
+}
+
+
+.close-modal{
+    display: flex; 
+    flex-direction: row-reverse;
+    margin: 25px 15px auto auto;
+}
+
