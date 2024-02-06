@@ -8,7 +8,9 @@ const discountCodeInputEl = document.getElementById("discount-code-input");
 const discountFeedbackMsg = document.getElementById("discount-feedback-msg");
 
 let order = [];
+let orderSum = 0; 
 let addedDiscountCode; 
+let discountSum = 0;
 
 document.addEventListener("click", function(e){
 
@@ -20,11 +22,11 @@ document.addEventListener("click", function(e){
         
         addToCart(currentItem)
     }
+
     else if (e.target.id === "order-btn" && order.length > 0){
-        // if(order.length > 0){
-            modalEl.classList.remove("display-none")
-        // }
+        modalEl.classList.remove("display-none")
     }
+
     else if (e.target.dataset.remove){
         removeItem(e.target.dataset.remove)
     }
@@ -37,56 +39,60 @@ document.addEventListener("click", function(e){
         // close modal, give a new pop up with "order received - and a star-rating?"
     }
     else if (e.target.id === "add-discount-btn"){
-        if(!addedDiscountCode){ }
+        
+        // adding multiple codes just overwrites the previous
+        // if(!addedDiscountCode){ } 
+
         validateAndSetDiscountCode()
 
-        // const discountCodeInputEl = document.getElementById("discount-code-input")
-        
-        // addedDiscountCode = checkAndReturnDiscount(discountCodeInputEl.value)
+        // change sum-function to include potential discount codes - default value being 0.
 
-        // if(!addedDiscountCode){
-        //     discountCodeInputEl.style.border = "1px solid red"; 
-        //     discountCodeInputEl.style.backgroundColor = "#ffd8d8"
-        //     document.getElementById("discount-error-msg").classList.remove("display-none")
-        // }
-
-
-        // add discount code to global let
-        //change sum-function to include potential discount codes - default value being 0.
-        // add discount to total sum - save the sum somewhere
     }
 
 })
 
 function validateAndSetDiscountCode(){
 
-    resetDiscountFeedback()
-
-    // discountFeedbackMsg.textContent = ""
-    // const inputCode = discountCodeInputEl.value.trim().toUpperCase()
+    // Should the discountvalidchecker also give feedback if required order amount is not yet reached
+    // need to give feedback on valid codes, where requirements are not met! 
+    // can not give discount on beer? Should there be a "discount-eligibility"-property on the menu-items? 
     
+    // render order needs to also display added discount code name
+
+
+    // resetDiscountFeedback()
+
+
     const filteredDiscountCodeArr = discountCodesArr.filter(function(discountCode){
         return discountCode.code === discountCodeInputEl.value.trim().toUpperCase();
     })
     
 
-    if(filteredDiscountCodeArr.length>0){
-        console.log("code exists");
+    if(filteredDiscountCodeArr.length>0 && orderSum >= filteredDiscountCodeArr[0].minimumOrderSum){
+        console.log("code exists and criteria is met");
         addedDiscountCode = filteredDiscountCodeArr[0];
-        // return filteredDiscountCodeArr[0];
+
+        // just renderOrder() to show feedback instead of setting text content in all three if-statements.
+        // add "order xx more to qualify for this discount code" - or make this on the line for the discount
+        // set a global let for feedbackmsg? 
         discountFeedbackMsg.textContent = `"${discountCodeInputEl.value}" has been added to your order`
 
         renderOrder();
+    }
+    else if(filteredDiscountCodeArr.length>0 && orderSum < filteredDiscountCodeArr[0].minimumOrderSum){
+        console.log("code exists, but criteria is not met");
+        addedDiscountCode = filteredDiscountCodeArr[0];
+        discountFeedbackMsg.textContent = `"${discountCodeInputEl.value}" has been added to your order`
+
+        renderOrder();
+        // add code, but do not apply the discount until criteria is met
+        // add  functionality in renderOrder for when criteria is met - or how much missing before the criteria is met
     }
     else{ 
         console.log("code does not exist");
         discountCodeInputEl.classList.add("input-error")
         discountFeedbackMsg.classList.add("error-msg")
-
-        // discountCodeInputEl.style.border = "1px solid #de4646"; 
-        // discountCodeInputEl.style.backgroundColor = "#ffd8d8"
         discountFeedbackMsg.textContent = `Sorry, "${discountCodeInputEl.value}" is not a valid discount code`
-        // return false;
     }
 }
 
@@ -94,6 +100,7 @@ function resetDiscountFeedback(){
     discountFeedbackMsg.textContent = ""
     discountFeedbackMsg.classList.remove("error-msg")
     discountCodeInputEl.classList.remove("input-error")
+    discountCodeInputEl.value="";
 }
 
 
@@ -171,15 +178,48 @@ function getOrderHtml(){
 }
 
 function renderOrder(){
+
+    // add discount functionality
+    // edit sum - and name the discount sum as well
+    // remember to alter display-none class on the different elements
+    // should the discount code field be visible when no items have been added? 
+
+
     orderEl.classList.remove("display-none")
     orderEl.innerHTML = getOrderHtml()
 
-    const orderSum = order.reduce(function(total, currentItem){
+    orderSum = order.reduce(function(total, currentItem){
         const currentItemTotalSum = currentItem.price * currentItem.orderAmount;
         return total + currentItemTotalSum;
     }, 0)
 
-    document.getElementById("order-sum").innerHTML = `$${orderSum}`
+
+    // should discount / sums be rendered in a different function? 
+    resetDiscountFeedback()
+
+    const discountSumLineEl = document.getElementById("discount-sum-line")
+    const discountSumEl = document.getElementById("discount-sum");
+    const discountDescrEl = document.getElementById("discount-description")
+
+    if (addedDiscountCode){
+        discountSumLineEl.classList.remove("display-none");
+        discountDescrEl.textContent = addedDiscountCode.description;
+
+        if(orderSum >= addedDiscountCode.minimumOrderSum && addedDiscountCode.discountType === "USD"){
+            discountSum = addedDiscountCode.discount;
+        }
+        else if (orderSum >= addedDiscountCode.minimumOrderSum && addedDiscountCode.discountType === "PCT") {
+            discountSum = orderSum*addedDiscountCode.discount/100;
+        }
+        else if (orderSum<addedDiscountCode.minimumOrderSum){
+            discountSum = 0;
+        }
+        
+        discountSumEl.textContent = `- $${discountSum}`
+    }
+
+
+    document.getElementById("order-sum").innerHTML = `$${orderSum-discountSum}`
     
     const totalSumEl = document.getElementById("total-sum");
     const orderBtn = document.getElementById("order-btn");

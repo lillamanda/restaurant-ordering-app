@@ -6,7 +6,8 @@ export const menuArray = [
         id: 0,
         price: 14,
         emoji: "🍕", 
-        orderAmount: 0
+        orderAmount: 0, 
+        // eligibleForDiscount: true
     },
     {
         name: "Hamburger",
@@ -15,7 +16,8 @@ export const menuArray = [
         price: 12,
         emoji: "🍔",
         id: 1, 
-        orderAmount: 0
+        orderAmount: 0, 
+        // eligibleForDiscount: true
     },
         {
         name: "Beer",
@@ -24,7 +26,8 @@ export const menuArray = [
         price: 12,
         emoji: "🍺",
         id: 2, 
-        orderAmount: 0
+        orderAmount: 0, 
+        // eligibleForDiscount: false
     }
 ]
 
@@ -33,12 +36,14 @@ export const discountCodesArr = [
         code: "10OFF50", 
         discountType: "USD",
         discount: 10, 
-        minimumOrderSum: 50
+        minimumOrderSum: 50, 
+        description: "$10 off orders over $50"
     }, 
     {
         code: "10PCT", 
         discountType: "PCT",
         discount: 10, 
-        minimumOrderSum: 0
+        minimumOrderSum: 0, 
+        description: "10% off"
     }
 ]
