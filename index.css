@@ -52,7 +52,8 @@ main{
 }
 
 .ordered-item-price, 
-.add-item-btn{
+.add-item-btn,
+.discount-sum{
     margin-left: auto;
 }
 
@@ -78,7 +79,8 @@ main{
 }
 
 .remove-ordered-item,
-.ordered-item-name{
+.ordered-item-name, 
+.discount-description{
     margin-left: 10px;
 }
 

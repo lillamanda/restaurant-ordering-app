@@ -29,7 +29,10 @@
             <div class="order-section">
                 <h1>Your order</h1>
 
-                <div class="order-list display-none" id="order">
+                <div id="order-el"></div>
+
+                <!-- <div class="order-list" id="order">  -->
+                    <!-- ^ Had display-none-class -->
                     <!-- <div class="ordered-item">
                         <span class="ordered-item-amount">2</span> 
                         <span class="ordered-item-name">pizza</span> 
@@ -42,19 +45,25 @@
                         <span class="remove-ordered-item" data-remove="${id}">remove</span>
                         <span class="ordered-item-price">$20</span>
                     </div>     -->
-                </div>
+                <!-- </div> -->
+
+                <!-- Change font-sizes for sum and discount lines.  -->
+
+                <div id="discount-el"></div>
 
                 <!-- Make this an element created by JS?  -->
-                <div class="sum-line display-none" id="discount-sum-line">
+                <!-- <div class="sum-line display-none" id="discount-sum-line">
                     Discount: 
                     <span id="discount-description"></span>
                     <span class="discount-sum" id="discount-sum">$0</span> 
-                </div>
+                </div> -->
+
+                <div id="total-sum-el"></div>
 
                 <!-- Make this an element created by JS?  -->
-                <div class="sum-line total-sum display-none" id="total-sum">
+                <!-- <div class="sum-line total-sum display-none" id="total-sum">
                     Total price: <span class="order-sum" id="order-sum">$0</span>
-                </div>
+                </div> -->
 
 
                 <!-- keep in html -->
