@@ -11,6 +11,7 @@ let order = [];
 let orderSum = 0; 
 let addedDiscountCode; 
 let discountSum = 0;
+// let discountFeedbackMsg = "";
 
 document.addEventListener("click", function(e){
 
@@ -67,6 +68,9 @@ function validateAndSetDiscountCode(){
         return discountCode.code === discountCodeInputEl.value.trim().toUpperCase();
     })
     
+    // When this code is calling to renderOrder(), the feedback message for valid codes 
+    // disappears bc renderOrder() clears feedback messages
+    // use timeouts for this message?  - clears with resetDiscountFeedback() after 5 sec? 
 
     if(filteredDiscountCodeArr.length>0 && orderSum >= filteredDiscountCodeArr[0].minimumOrderSum){
         console.log("code exists and criteria is met");
@@ -96,17 +100,14 @@ function validateAndSetDiscountCode(){
     }
 }
 
+// function setDiscountFeedback(){}
+
 function resetDiscountFeedback(){
     discountFeedbackMsg.textContent = ""
     discountFeedbackMsg.classList.remove("error-msg")
     discountCodeInputEl.classList.remove("input-error")
     discountCodeInputEl.value="";
 }
-
-
-// const paymentForm = document.getElementById("payment-form")
-
-
 
 function addToCart(item){
     item.orderAmount += 1;
@@ -131,13 +132,10 @@ function removeItem(itemId){
     renderOrder()
 }
 
-
-//combine getMenuHtml() and renderMenu() ? 
 function getMenuHtml(){
 
     const menuHtml = menuArray.map(function(menuItem){
         const {image, name, ingredients, price, id} = menuItem;
-        // menuItem.uuid = uuidv4();
 
         return `                
         <div class="menu-item">
@@ -153,10 +151,10 @@ function getMenuHtml(){
 
     return menuHtml;
 }
+
 function renderMenu(){
+    // menuEl - benyttes denne globalt? 
     menuEl.innerHTML = getMenuHtml();
-    // menuEl.textContent = getMenuHtml();
-    // menuEl.append(getMenuHtml());
 }
 
 function getOrderHtml(){
@@ -177,61 +175,72 @@ function getOrderHtml(){
     return orderHtml;
 }
 
-function renderOrder(){
+function calculateDiscount(){
+    if(orderSum >= addedDiscountCode.minimumOrderSum && addedDiscountCode.discountType === "USD"){
+        discountSum = addedDiscountCode.discount;
+    }
+    else if (orderSum >= addedDiscountCode.minimumOrderSum && addedDiscountCode.discountType === "PCT") {
+        discountSum = orderSum*addedDiscountCode.discount/100;
+    }
+    else if (orderSum<addedDiscountCode.minimumOrderSum){
+        discountSum = 0;
+    }
+}
 
-    // add discount functionality
-    // edit sum - and name the discount sum as well
-    // remember to alter display-none class on the different elements
-    // should the discount code field be visible when no items have been added? 
-
-
-    orderEl.classList.remove("display-none")
-    orderEl.innerHTML = getOrderHtml()
-
+function calculateOrderSum(){
     orderSum = order.reduce(function(total, currentItem){
         const currentItemTotalSum = currentItem.price * currentItem.orderAmount;
         return total + currentItemTotalSum;
     }, 0)
 
+    // addedDiscountCode && calculateDiscount(); <- I know you can type the following like this, but I prefer the readability of the code below
+    if (addedDiscountCode){
+        calculateDiscount();
+    }
 
-    // should discount / sums be rendered in a different function? 
-    resetDiscountFeedback()
+    // const finalOrderSum = orderSum - discountSum;
 
-    const discountSumLineEl = document.getElementById("discount-sum-line")
-    const discountSumEl = document.getElementById("discount-sum");
-    const discountDescrEl = document.getElementById("discount-description")
+    // return finalOrderSum;
+    
+}
+
+function renderOrder(){
+
+    // edit sum - and name the discount sum as well
+    // remember to alter display-none class on the different elements
+    // should the discount code field be visible when no items have been added? 
+
+    resetDiscountFeedback();
+
+    orderEl.innerHTML = getOrderHtml();
+    calculateOrderSum();
 
     if (addedDiscountCode){
-        discountSumLineEl.classList.remove("display-none");
-        discountDescrEl.textContent = addedDiscountCode.description;
-
-        if(orderSum >= addedDiscountCode.minimumOrderSum && addedDiscountCode.discountType === "USD"){
-            discountSum = addedDiscountCode.discount;
-        }
-        else if (orderSum >= addedDiscountCode.minimumOrderSum && addedDiscountCode.discountType === "PCT") {
-            discountSum = orderSum*addedDiscountCode.discount/100;
-        }
-        else if (orderSum<addedDiscountCode.minimumOrderSum){
-            discountSum = 0;
-        }
-        
-        discountSumEl.textContent = `- $${discountSum}`
+        document.getElementById("discount-sum-line").classList.remove("display-none");
+        document.getElementById("discount-description").textContent = addedDiscountCode.description;
+        document.getElementById("discount-sum").textContent = `- $${discountSum.toFixed(2)}`;
     }
 
 
-    document.getElementById("order-sum").innerHTML = `$${orderSum-discountSum}`
+    // toFixed does not work here! render sum with 2 decimal points
+    document.getElementById("order-sum").innerHTML = `$${orderSum.toFixed(2)-discountSum.toFixed(2)}`
     
     const totalSumEl = document.getElementById("total-sum");
     const orderBtn = document.getElementById("order-btn");
     
+
+    //Add a div for display-none that includes everything except the title maybe? (over the title can be a div saying no items added or something? )
     if(order.length>0){
         totalSumEl.classList.remove("display-none");
+        orderEl.classList.remove("display-none")
+
         orderBtn.disabled = false;
     } 
     else{
         totalSumEl.classList.add("display-none");
+        orderEl.classList.add("display-none")
+
         orderBtn.disabled = true;
-    
     }
 }
 

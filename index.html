@@ -30,7 +30,6 @@
                 <h1>Your order</h1>
 
                 <div class="order-list display-none" id="order">
-
                     <!-- <div class="ordered-item">
                         <span class="ordered-item-amount">2</span> 
                         <span class="ordered-item-name">pizza</span> 
@@ -43,28 +42,23 @@
                         <span class="remove-ordered-item" data-remove="${id}">remove</span>
                         <span class="ordered-item-price">$20</span>
                     </div>     -->
-
-                    <!-- <div class="ordered-item">
-                        <span class="order-amount">2</span> 
-                        pizza 
-                        <span class="remove-item" data-remove="${id}">remove</span>
-                        <span class="ordered-item-price">$20</span>
-                    </div>         -->
-
                 </div>
 
+                <!-- Make this an element created by JS?  -->
                 <div class="sum-line display-none" id="discount-sum-line">
                     Discount: 
                     <span id="discount-description"></span>
                     <span class="discount-sum" id="discount-sum">$0</span> 
                 </div>
 
+                <!-- Make this an element created by JS?  -->
                 <div class="sum-line total-sum display-none" id="total-sum">
                     Total price: <span class="order-sum" id="order-sum">$0</span>
                 </div>
 
+
+                <!-- keep in html -->
                 <div class="discount-code-div ">
-                    <!-- <label for="discount-code">Add discount code: </label> -->
                     <span id="discount-feedback-msg"></span>
                     <input 
                         type="text" 
@@ -73,16 +67,14 @@
                         placeholder="Add discount code"
                         aria-label="Add discount code"
                     >
-
                     <button class="add-discount-btn" id="add-discount-btn">add</button>
-
-                    <!-- <div class="add-discount-btn" id="add-discount-btn">add</div> -->
-                    <!-- <i class="fa-solid fa-plus"></i> -->
                 </div>
 
+                <!-- keep in html -->
                 <button class="btn" id="order-btn" disabled>Complete order</button> 
 
             </div>
+
             <div class="modal display-none" id="payment-modal">
                 <div class="close-modal"><i class="fa-xl fa-solid fa-xmark" id="close-modal-btn"></i></div>
                 <h1>Enter card details</h1>
