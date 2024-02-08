@@ -31,43 +31,11 @@
 
                 <div id="order-el"></div>
 
-                <!-- <div class="order-list" id="order">  -->
-                    <!-- ^ Had display-none-class -->
-                    <!-- <div class="ordered-item">
-                        <span class="ordered-item-amount">2</span> 
-                        <span class="ordered-item-name">pizza</span> 
-                        <span class="remove-ordered-item" data-remove="${id}">remove</span>
-                        <span class="ordered-item-price">$20</span>
-                    </div>    
-                    <div class="ordered-item">
-                        <span class="ordered-item-amount">2</span> 
-                        <span class="ordered-item-name">pizza</span> 
-                        <span class="remove-ordered-item" data-remove="${id}">remove</span>
-                        <span class="ordered-item-price">$20</span>
-                    </div>     -->
-                <!-- </div> -->
-
-                <!-- Change font-sizes for sum and discount lines.  -->
-
                 <div id="discount-el"></div>
-
-                <!-- Make this an element created by JS?  -->
-                <!-- <div class="sum-line display-none" id="discount-sum-line">
-                    Discount: 
-                    <span id="discount-description"></span>
-                    <span class="discount-sum" id="discount-sum">$0</span> 
-                </div> -->
 
                 <div id="total-sum-el"></div>
 
-                <!-- Make this an element created by JS?  -->
-                <!-- <div class="sum-line total-sum display-none" id="total-sum">
-                    Total price: <span class="order-sum" id="order-sum">$0</span>
-                </div> -->
-
-
-                <!-- keep in html -->
-                <div class="discount-code-div ">
+                <div class="discount-code-el display-none" id="discount-code-el">
                     <span id="discount-feedback-msg"></span>
                     <input 
                         type="text" 
@@ -79,13 +47,12 @@
                     <button class="add-discount-btn" id="add-discount-btn">add</button>
                 </div>
 
-                <!-- keep in html -->
                 <button class="btn" id="order-btn" disabled>Complete order</button> 
 
             </div>
 
             <div class="modal display-none" id="payment-modal">
-                <div class="close-modal"><i class="fa-xl fa-solid fa-xmark" id="close-modal-btn"></i></div>
+                <div class="close-modal"><i class="fa-xl fa-solid fa-xmark" data-close="payment-modal"></i></div>
                 <h1>Enter card details</h1>
                 <form id="payment-form">
                     <input required 
@@ -122,6 +89,53 @@
                     <button class="btn" type="submit" id="pay-btn">Pay</button>
                 </form>
             </div>
+
+            <div class="modal display-none" id="order-confirmation-modal">
+                <div class="close-modal"><i class="fa-xl fa-solid fa-xmark" data-close="order-confirmation-modal"></i></div>
+
+                <div id="thank-you-customer"></div>
+
+                <div id="order-information-el">
+                    <!-- <div class="receipt">
+                        <h1>Order receipt</h1>
+                        <p>Order ID: ${uuid}</p>
+                        <br>
+                        ${itemList}
+                        <hr>
+                        <p class="itemized-line">Discount <span id="margin-left-auto">- $${this.receiptDiscount}</span></p>
+                        <hr>
+                        <p class="itemized-line bold">Total sum <span id="margin-left-auto">$${this.receiptSumAfterDiscount}</span></p>
+                        <br>
+                        <p>Customer: ${this.customerName}</p>
+                        <p>Paid with creditcard: 
+                        <br>${this.creditcardBlanked}</p>
+                    </div> -->
+                </div> 
+                <div id="rate-experience-el">
+                    <!-- <i class="fa-solid fa-star"></i> -->
+                    <i class="fa-regular fa-star rating-stars" data-star="1"></i>
+                    <i class="fa-regular fa-star rating-stars" data-star="2"></i>
+                    <i class="fa-regular fa-star rating-stars" data-star="3"></i>
+                    <i class="fa-regular fa-star rating-stars" data-star="4"></i>
+                    <i class="fa-regular fa-star rating-stars" data-star="5"></i>
+                    <p class="display-none" id="feedback-to-user-after-rating">Thank you for your feedback!</p>
+                    <p class="small display-none" id="double-voting-error-message"> Sorry, you can only give feedback once per order </p>
+                </div>
+            </div>
+
+            <!-- <div class="receipt">
+                <h1>Order receipt</h1>
+                <p class="itemized-line display-flex-align-center">2 Pizza <span class="margin-left-auto">$30</span></p>
+                <p class="itemized-line display-flex-align-center">1 Hamburger <span class="margin-left-auto">$12</span></p>
+                <hr>
+                <p class="itemized-line display-flex-align-center">Discount <span class="margin-left-auto">- $10</span></p>
+                <hr>
+                <p class="itemized-line display-flex-align-center bold">Total sum <span class="margin-left-auto">$32</span></p>
+                <br>
+                <p>Customer: Name Namesen</p>
+                <p>Paid with creditcard: <br>**** **** **** 9232</p>
+            </div> -->
+
         </main>
 
 

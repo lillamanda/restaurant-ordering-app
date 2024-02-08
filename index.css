@@ -16,23 +16,25 @@ main{
 
 /* LAYOUT */
 
-.menu-item,
-.sum-line, 
-.ordered-item,
-.discount-code-div{
+.receipt{
+    width: 150px;
+    margin: auto;
+    text-align: center;
+}
+.receipt p{
+    margin: 5px 0px;
+}
+
+.discount-code-el,
+.itemized-line{
     display:flex;
     align-items: center;
 }
 
-.sum-line, 
-.ordered-item, 
-.total-sum{
-    justify-content: space-between; 
-}
-
-.discount-code-div{
+.discount-code-el{
     justify-content: flex-end;
     gap: 10px;
+    margin-top: 15px;
 }
 
 .menu-item{
@@ -47,13 +49,7 @@ main{
     gap: 20px;
 }
 
-.discount-code-div{
-    margin-top: 15px;
-}
-
-.ordered-item-price, 
-.add-item-btn,
-.discount-sum{
+.margin-left-auto{
     margin-left: auto;
 }
 
@@ -78,9 +74,7 @@ main{
     padding-bottom: 20px;
 }
 
-.remove-ordered-item,
-.ordered-item-name, 
-.discount-description{
+.slight-indent{
     margin-left: 10px;
 }
 
@@ -119,7 +113,7 @@ form:invalid button{
 }
 
 .add-discount-btn,
-.discount-code-div input{
+.discount-code-el input{
     padding: 5px 10px; 
     border-radius: 12px;
 }
@@ -129,7 +123,7 @@ form:invalid button{
     border: none;
 }
 
-.discount-code-div input{
+.discount-code-el input{
     border: 1px solid black; 
 }
 
@@ -137,24 +131,33 @@ form:invalid button{
 
 /* TYPOGRAPHY */
 
+.bold{
+    font-weight: 600;
+}
+
 .modal, 
 .btn, 
-.discount-code-div,
+.discount-code-el,
 .remove-ordered-item{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-h1, 
+#order-information-el{
+    font-family: "Smythe", sans-serif;
+}
+
 .ordered-item, 
-.total-sum{
+.total-sum, 
+h1{
     font-size: 28px;
     font-weight: 400;
 }
 
+/* Use P here? */
 .item-price, 
 .ordered-item-price, 
-.order-sum,
-.discount-sum, 
+/* .order-sum, */
+/* .discount-sum,  */
 .modal{
     font-size: 20px;
 }
@@ -164,8 +167,9 @@ h1,
     font-size: 16px;
 }
 
+.small, 
 .remove-ordered-item,
-.discount-code-div{
+.discount-code-el{
     font-size: 12px;
 }
 

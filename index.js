@@ -1,8 +1,15 @@
-import { menuArray, discountCodesArr } from "/data.js"
+import { menuArray, discountCodesArr, ordersArr } from "/data.js"
+import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
-const modalEl = document.getElementById("payment-modal"); 
 const discountCodeInputEl = document.getElementById("discount-code-input");
 const discountFeedbackMsgEl = document.getElementById("discount-feedback-msg");
+const paymentModalEl = document.getElementById("payment-modal");
+const orderConfirmationModalEl = document.getElementById("order-confirmation-modal");
+
+const orderEl = document.getElementById("order-el");
+const totalSumEl = document.getElementById("total-sum-el");
+const discountEl = document.getElementById("discount-el");
+const discountCodeEl = document.getElementById("discount-code-el");
 
 let order = [];
 
@@ -12,6 +19,57 @@ let orderSum = 0;
 let discountSum = 0;
 let totalSumAfterDiscount = 0;
 
+let ratingGiven = false;
+
+class OrderReceipt{
+    constructor(currentOrderList, currentOrderSum, currentDiscountSum, customerName, creditcard){
+        // I know a uuid isn't needed in this case, and order numerations would ideally be sequential, but I wanted to practice it :)
+        this.uuid = uuidv4().replace(/\D/g, "").substring(0,5);
+
+        this.orderedItems = currentOrderList; 
+        this.receiptOrderSum = currentOrderSum;
+        this.receiptDiscount = currentDiscountSum; 
+        this.receiptSumAfterDiscount = this.receiptOrderSum - this.receiptDiscount; 
+
+        this.customerName = customerName.trim();
+        this.creditcardBlanked = `**** **** **** ${creditcard.trim().substr(-4, 4)}`;
+    }
+
+    getReceiptHtml() {
+        const itemList = this.orderedItems.map(function(item){
+            const { orderAmount, name, price } = item; 
+
+            return `
+                <p class="itemized-line">${orderAmount} ${name} 
+                    <span class="margin-left-auto">$${price}</span>
+                </p>
+            ` 
+        }).join("")
+
+
+        // Dont render a discount line if a discount was not given
+        // render the name of the discount?? 
+
+        return `            
+            <div class="receipt">
+                <h1>Order receipt</h1>
+                <p>Order ID: ${this.uuid}</p>
+                <br>
+                ${itemList}
+                <hr>
+                <p class="itemized-line">Discount <span class="margin-left-auto">- $${this.receiptDiscount}</span></p>
+                <hr>
+                <p class="itemized-line bold">Total sum <span class="margin-left-auto">$${this.receiptSumAfterDiscount}</span></p>
+                <br>
+                <p>Customer: ${this.customerName}</p>
+                <p>Paid with creditcard: 
+                <br>${this.creditcardBlanked}</p>
+            </div>`
+    }
+
+}
+
+renderMenu();
 
 document.addEventListener("click", function(e){
 
@@ -27,37 +85,109 @@ document.addEventListener("click", function(e){
     }
 
     else if (e.target.id === "order-btn" && order.length > 0){
-        modalEl.classList.remove("display-none")
+        paymentModalEl.classList.remove("display-none")
     }
 
     else if (e.target.dataset.remove){
         removeItem(e.target.dataset.remove)
     }
-    else if (e.target.id === "close-modal-btn"){
-        modalEl.classList.add("display-none")
+    else if (e.target.dataset.close){
+        document.getElementById(e.target.dataset.close).classList.add("display-none")
     }
     else if (e.target.id === "pay-btn"){
-        // check if all fields are filled
+        e.preventDefault();
+
+        // function to toggle modal? 
+        paymentModalEl.classList.add("display-none");
+        orderConfirmationModalEl.classList.remove("display-none");
+
+
+        const customerName = document.querySelector("#name").value;
+        const creditcardNumber = document.querySelector("#card-number").value;
+
+        // create OrderReceipt
+        const orderReceipt = new OrderReceipt(order, orderSum, discountSum, customerName, creditcardNumber);
+
+        // ordersArr.push(orderReceipt)
+        renderOrderConfirmationModal(orderReceipt);
+
+        // clear all orderfields
+
+        // provide a star-review-option to be stored somewhere?
+
         // add all info from fields into new const and log this out. - or save it to an object array in data.js
         // close modal, give a new pop up with "order received - and a star-rating?"
     }
     else if (e.target.id === "add-discount-btn"){
+        validateAndSetDiscountCode(discountCodeInputEl.value)
+    }
+
+    else if (e.target.dataset.star){
         
-        // adding multiple codes just overwrites the previous
-        // if(!addedDiscountCode){ } 
-
-        validateAndSetDiscountCode()
-
-        // change sum-function to include potential discount codes - default value being 0.
-
+        if(!ratingGiven){
+            renderStarsGiven(e.target.dataset.star);
+            ratingGiven = true;
+            document.getElementById("feedback-to-user-after-rating").classList.remove("display-none")
+        }
+        else{
+            document.getElementById("double-voting-error-message").classList.remove("display-none")
+        }
     }
 
 })
 
-function validateAndSetDiscountCode(){
-    // can not give discount on beer? Should there be a "discount-eligibility"-property on the menu-items? 
-    
-    const inputCode = discountCodeInputEl.value;
+function renderOrderConfirmationModal(receipt){
+
+    const orderConfirmationModalEl = document.getElementById("order-confirmation-modal");
+
+    orderConfirmationModalEl.classList.remove("display.none");
+
+    const customerFirstName = receipt.customerName.split(" ");
+    console.log(customerFirstName)
+    console.log(customerFirstName[0])
+    document.getElementById("thank-you-customer").innerHTML = `Thank you, ${customerFirstName[0]}!`
+
+    // I'm getting names form form - should I use something other than innerHTML?
+    document.getElementById("order-information-el").innerHTML = receipt.getReceiptHtml();
+
+    // Thank you, NAME
+    //receipt
+
+    // Rate your order experience staricons - fill them or not based on where the user clicks
+}
+
+// console.log(document.getElementsByClassName("rating-stars"))
+// console.log(typeof document.getElementsByClassName("rating-stars"))
+
+
+function renderStarsGiven(numberOfStarsClicked){
+    const ratingStars = document.getElementsByClassName("rating-stars"); 
+    // resetStars(ratingStars);
+
+    for (let i = 0; i < numberOfStarsClicked; i++){
+        ratingStars[i].classList.remove("fa-regular");
+        ratingStars[i].classList.add("fa-solid")
+    }
+}
+
+// function resetStars(stars){
+//     rateExperienceEl.innerHTML = `
+//         <i class="fa-regular fa-star rating-stars" data-star="1"></i>
+//         <i class="fa-regular fa-star rating-stars" data-star="2"></i>
+//         <i class="fa-regular fa-star rating-stars" data-star="3"></i>
+//         <i class="fa-regular fa-star rating-stars" data-star="4"></i>
+//         <i class="fa-regular fa-star rating-stars" data-star="5"></i>
+//         `
+//     // for (let i = 0; i<stars.length; i++){    
+//     //     stars[i].classList.add("fa-regular");
+//     //     stars[i].classList.remove("fa-solid")
+//     // }
+// }
+
+// can not give discount on beer? Should there be a "discount-eligibility"-property on the menu-items? 
+
+function validateAndSetDiscountCode(inputCode){    
+    // const inputCode = discountCodeInputEl.value;
 
     const filteredDiscountCodeArr = discountCodesArr.filter(function(discountCode){
         return discountCode.code === inputCode.trim().toUpperCase();
@@ -67,34 +197,18 @@ function validateAndSetDiscountCode(){
 
     let discountFeedbackMsg = "";
 
-    if(filteredDiscountCodeArr.length>0 && orderSum >= filteredDiscountCodeArr[0].minimumOrderSum){
-        console.log("code exists and criteria is met");
-        addedDiscountCode = filteredDiscountCodeArr[0];
-
-        // add "order xx more to qualify for this discount code" - or make this on the line for the discount
-        discountFeedbackMsg = `"${inputCode}" has been added to your order`
-
-        renderOrderSection("discountcode added");
-    }
-    else if(filteredDiscountCodeArr.length>0 && orderSum < filteredDiscountCodeArr[0].minimumOrderSum){
-        console.log("code exists, but criteria is not met");
+    if(filteredDiscountCodeArr.length>0){
         addedDiscountCode = filteredDiscountCodeArr[0];
         discountFeedbackMsg = `"${inputCode}" has been added to your order`
-
         renderOrderSection("discountcode added");
-
-        // add  functionality in renderOrder for when criteria is met - or how much missing before the criteria is met
     }
     else{ 
-        console.log("code does not exist");
         discountCodeInputEl.classList.add("input-error")
         discountFeedbackMsgEl.classList.add("error-msg")
         discountFeedbackMsg = `Sorry, "${inputCode}" is not a valid discount code`
     }
 
     discountFeedbackMsgEl.textContent = discountFeedbackMsg;
-
-    // setTimeout(resetDiscountFeedback, "5000");
 
 }
 
@@ -128,8 +242,6 @@ function removeItem(itemId){
     renderOrderSection()
 }
 
-
-
 function renderMenu(){
     document.getElementById("menu").innerHTML = getMenuHtml();
 }
@@ -140,14 +252,14 @@ function getMenuHtml(){
         const {image, name, ingredients, price, id} = menuItem;
 
         return `                
-        <div class="menu-item">
+        <div class="itemized-line menu-item">
             <img class="item-img" src="img/${image}">
             <div class="item-info">
                 <h1>${name}</h1>
                 <p class="item-ingredient-list">${ingredients.join(", ")}</p>
                 <p class="item-price">$${price}</p>
             </div>
-            <img src="img/add-btn.png" class="add-item-btn" data-order="${id}">
+            <img src="img/add-btn.png" class="margin-left-auto add-item-btn" data-order="${id}">
         </div>` 
     }).join("")
 
@@ -160,34 +272,34 @@ function renderOrder(){
         const {name, price, id, orderAmount} = item; 
         
         return `                    
-        <div class="ordered-item">
+        <div class="itemized-line ordered-item">
             <span class="ordered-item-amount">${orderAmount}</span> 
-            <span class="ordered-item-name">${name}</span>
-            <span class="remove-ordered-item" data-remove="${id}">remove</span>
-            <span class="ordered-item-price">$${price*orderAmount}</span>
+            <span class="slight-indent">${name}</span>
+            <span class="slight-indent remove-ordered-item" data-remove="${id}">remove</span>
+            <span class="margin-left-auto ordered-item-price">$${price*orderAmount}</span>
         </div>
         ` 
 
     }).join("");
-    
 
-    document.getElementById("order-el").innerHTML = `
-    <div class="order-list" id="order">
-        ${orderHtml}
-    </div>`
+    orderEl.innerHTML = `
+        <div class="order-list" id="order">
+            ${orderHtml}
+        </div>`
 
 }
-
-
 
 function renderTotalSum(){
 
     // calculateOrderSum();
     // renderDiscount()
 
-    document.getElementById("total-sum-el").innerHTML = `   
-    <div class="sum-line total-sum">
-        Total price: <span class="order-sum">$${totalSumAfterDiscount.toFixed(2)}</span>
+    // OR : return html to render in order
+
+    // Maybe remove total-sum? replace it with h1 or a boldandbig-class?
+    totalSumEl.innerHTML = `   
+    <div class="itemized-line total-sum">
+        Total price: <span class="margin-left-auto">$${totalSumAfterDiscount.toFixed(2)}</span>
     </div>`
 
 }
@@ -219,37 +331,40 @@ function calculateDiscount(){
     }
 }
 
-
 function renderDiscount(){
 
     let discountHtml = "";
 
     if (addedDiscountCode){
+
+        const discountPromptSum = addedDiscountCode.minimumOrderSum > orderSum ? addedDiscountCode.minimumOrderSum - orderSum : 0;
+        const discountPrompt = discountPromptSum ? `Order for $${discountPromptSum} more to qualify for the discount`: "";
+        
         discountHtml = `
-        <div class="sum-line">
+        <div class="itemized-line">
             Discount:   
-            <span class="discount-description">${addedDiscountCode.description}</span>
-            <span class="discount-sum">$${discountSum.toFixed(2)}</span> 
+            <span class="slight-indent">${addedDiscountCode.description}</span>
+            <span class="margin-left-auto">${discountPrompt}</span>
+            <span class="margin-left-auto">$${discountSum.toFixed(2)}</span> 
         </div>`     
     }
 
-    document.getElementById("discount-el").innerHTML = discountHtml;
+    discountEl.innerHTML = discountHtml;
 
 }
 
+
 function clearOrderSection(){
-    document.getElementById("order-el").innerHTML = "";
-    document.getElementById("total-sum-el").innerHTML = "";
+    // add these to global: 
+    orderEl.innerHTML = "";
+    totalSumEl.innerHTML = "";
+    discountEl.innerHTML = "";
+    discountCodeEl.classList.add("display-none")
 }
 
 function renderOrderSection(discountAdded = false){ 
 
     // add possibility to remove discount code? 
-    // add functionality to show how much more you need to order to hit the discount requirement
-
-    // should the discount code field be visible when no items have been added? 
-
-
 
     if(!discountAdded){
         resetDiscountFeedback();
@@ -265,11 +380,12 @@ function renderOrderSection(discountAdded = false){
         clearOrderSection()
     }
     else{
+        discountCodeEl.classList.remove("display-none")
         renderOrder()
         renderDiscount();
         renderTotalSum();
     }
 }
 
+// add app functionality from shopping-app? 
 
-renderMenu();
