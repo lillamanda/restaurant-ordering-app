@@ -16,23 +16,26 @@ main{
 
 /* LAYOUT */
 
-.menu-item,
-.sum-line, 
-.ordered-item,
-.discount-code-div{
+.receipt{
+    width: 150px;
+    margin: auto;
+    text-align: center;
+    margin-top: 35px;
+}
+.receipt p{
+    margin: 5px 0px;
+}
+
+.discount-code-el,
+.itemized-line{
     display:flex;
     align-items: center;
 }
 
-.sum-line, 
-.ordered-item, 
-.total-sum{
-    justify-content: space-between; 
-}
-
-.discount-code-div{
+.discount-code-el{
     justify-content: flex-end;
     gap: 10px;
+    margin-top: 15px;
 }
 
 .menu-item{
@@ -41,18 +44,14 @@ main{
 }
 
 .modal form{
+    margin-top: 45px;
     display: flex; 
     flex-direction: column;
     align-items: stretch;
     gap: 20px;
 }
 
-.discount-code-div{
-    margin-top: 15px;
-}
-
-.ordered-item-price, 
-.add-item-btn{
+.margin-left-auto{
     margin-left: auto;
 }
 
@@ -77,14 +76,22 @@ main{
     padding-bottom: 20px;
 }
 
-.remove-ordered-item,
-.ordered-item-name{
+.slight-indent{
     margin-left: 10px;
 }
 
+.rate-experience-el{
+    /* margin: 45px auto; */
+    margin-top: 45px;
+}
 
+/* Add color to the rating-stars? */
 
 /* IMAGES, ICONS, BUTTONS, INPUT FORMATTING */
+
+.rating-stars{
+    color: #16DB99;
+}
 
 .item-img{
     width: 80px;
@@ -117,7 +124,7 @@ form:invalid button{
 }
 
 .add-discount-btn,
-.discount-code-div input{
+.discount-code-el input{
     padding: 5px 10px; 
     border-radius: 12px;
 }
@@ -127,7 +134,7 @@ form:invalid button{
     border: none;
 }
 
-.discount-code-div input{
+.discount-code-el input{
     border: 1px solid black; 
 }
 
@@ -135,24 +142,33 @@ form:invalid button{
 
 /* TYPOGRAPHY */
 
+.bold{
+    font-weight: 600;
+}
+
 .modal, 
 .btn, 
-.discount-code-div,
+.discount-code-el,
 .remove-ordered-item{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-h1, 
+#order-information-el{
+    font-family: "Smythe", sans-serif;
+}
+
 .ordered-item, 
-.total-sum{
+.total-sum, 
+h1{
     font-size: 28px;
     font-weight: 400;
 }
 
+/* Use P here? */
 .item-price, 
 .ordered-item-price, 
-.order-sum,
-.discount-sum, 
+/* .order-sum, */
+/* .discount-sum,  */
 .modal{
     font-size: 20px;
 }
@@ -162,8 +178,9 @@ h1,
     font-size: 16px;
 }
 
+.small, 
 .remove-ordered-item,
-.discount-code-div{
+.discount-code-el{
     font-size: 12px;
 }
 
@@ -197,16 +214,12 @@ h1,
     background-color: white;
     text-align: center;
     padding: 20px;
+    padding: 50px 20px;
     width: 490px;
     position: fixed;
     top: 260;
     left: 35;
     box-shadow: 0 0 150px 0px black;
-}
-
-.modal h1{
-    margin-bottom: 45px;
-    margin-top: 35px;
 }
 
 .modal input{

@@ -1,4 +1,4 @@
-export const menuArray = [
+const menuArray = [
     {
         name: "Pizza",
         image: "pizza.png",
@@ -31,7 +31,7 @@ export const menuArray = [
     }
 ]
 
-export const discountCodesArr = [
+const discountCodesArr = [
     {
         code: "10OFF50", 
         discountType: "USD",
@@ -47,3 +47,11 @@ export const discountCodesArr = [
         description: "10% off"
     }
 ]
+
+
+//remove?? 
+const ordersArr = [
+]
+
+
+export { menuArray, discountCodesArr, ordersArr }

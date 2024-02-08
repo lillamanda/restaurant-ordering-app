@@ -29,36 +29,13 @@
             <div class="order-section">
                 <h1>Your order</h1>
 
-                <div class="order-list display-none" id="order">
-                    <!-- <div class="ordered-item">
-                        <span class="ordered-item-amount">2</span> 
-                        <span class="ordered-item-name">pizza</span> 
-                        <span class="remove-ordered-item" data-remove="${id}">remove</span>
-                        <span class="ordered-item-price">$20</span>
-                    </div>    
-                    <div class="ordered-item">
-                        <span class="ordered-item-amount">2</span> 
-                        <span class="ordered-item-name">pizza</span> 
-                        <span class="remove-ordered-item" data-remove="${id}">remove</span>
-                        <span class="ordered-item-price">$20</span>
-                    </div>     -->
-                </div>
+                <div id="order-el"></div>
 
-                <!-- Make this an element created by JS?  -->
-                <div class="sum-line display-none" id="discount-sum-line">
-                    Discount: 
-                    <span id="discount-description"></span>
-                    <span class="discount-sum" id="discount-sum">$0</span> 
-                </div>
+                <div id="discount-el"></div>
 
-                <!-- Make this an element created by JS?  -->
-                <div class="sum-line total-sum display-none" id="total-sum">
-                    Total price: <span class="order-sum" id="order-sum">$0</span>
-                </div>
+                <div id="total-sum-el"></div>
 
-
-                <!-- keep in html -->
-                <div class="discount-code-div ">
+                <div class="discount-code-el display-none" id="discount-code-el">
                     <span id="discount-feedback-msg"></span>
                     <input 
                         type="text" 
@@ -70,14 +47,17 @@
                     <button class="add-discount-btn" id="add-discount-btn">add</button>
                 </div>
 
-                <!-- keep in html -->
                 <button class="btn" id="order-btn" disabled>Complete order</button> 
 
             </div>
 
             <div class="modal display-none" id="payment-modal">
-                <div class="close-modal"><i class="fa-xl fa-solid fa-xmark" id="close-modal-btn"></i></div>
+                <div class="close-modal">
+                    <i class="fa-xl fa-solid fa-xmark" data-close="payment-modal"></i>
+                </div>
+
                 <h1>Enter card details</h1>
+
                 <form id="payment-form">
                     <input required 
                         type="text" 
@@ -113,10 +93,44 @@
                     <button class="btn" type="submit" id="pay-btn">Pay</button>
                 </form>
             </div>
+
+            <div class="modal display-none" id="order-confirmation-modal">
+                <div class="close-modal">
+                    <i class="fa-xl fa-solid fa-xmark" data-close="order-confirmation-modal"></i>
+                </div>
+
+                <div id="thank-you-customer"></div>
+
+                <div id="order-information-el"></div> 
+
+                <div class="rate-experience-el" id="rate-experience-el">
+                    <p class="small">Rate your order experience</p>
+                    
+                    <i class="fa-regular fa-star rating-stars" data-star="1"></i>
+                    <i class="fa-regular fa-star rating-stars" data-star="2"></i>
+                    <i class="fa-regular fa-star rating-stars" data-star="3"></i>
+                    <i class="fa-regular fa-star rating-stars" data-star="4"></i>
+                    <i class="fa-regular fa-star rating-stars" data-star="5"></i>
+                    <p class="display-none" id="feedback-to-user-after-rating">
+                        Thank you for your feedback!
+                    </p>
+
+                    <p class="small display-none" id="double-voting-error-message"> 
+                        Sorry, you can only give feedback once per order 
+                    </p>
+                </div>
+
+                <button class="btn" data-close="order-confirmation-modal">Close</button>
+
+            </div>
+
+
         </main>
 
 
-	<script src="index.js" type="module"></script>
+	    <script src="index.js" type="module"></script>
+
     </body>
+
 </html>
 
