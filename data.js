@@ -48,8 +48,6 @@ const discountCodesArr = [
     }
 ]
 
-
-//remove?? 
 const ordersArr = [
 ]
 

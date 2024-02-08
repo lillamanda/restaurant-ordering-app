@@ -3,13 +3,10 @@ import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
 const discountCodeInputEl = document.getElementById("discount-code-input");
 const discountFeedbackMsgEl = document.getElementById("discount-feedback-msg");
-const paymentModalEl = document.getElementById("payment-modal");
-const orderConfirmationModalEl = document.getElementById("order-confirmation-modal");
 
 const orderEl = document.getElementById("order-el");
 const totalSumEl = document.getElementById("total-sum-el");
 const discountEl = document.getElementById("discount-el");
-const discountCodeEl = document.getElementById("discount-code-el");
 
 let order = [];
 
@@ -24,7 +21,7 @@ let ratingGiven = false;
 class OrderReceipt{
     constructor(currentOrderList, currentOrderSum, currentDiscountSum, customerName, creditcard){
 
-        // Note: I know a uuid isn't needed in this case, and that it should probably not be manipulated in this way. 
+        // Note: I know a uuid isn't needed in this case, and that it should not be manipulated in this way. 
         // Also, order numerations would ideally be sequential, but I wanted to practice using UUID, 
         // - and the manipulation of the string was just added bonus practice :)
         this.uuid = uuidv4().replace(/\D/g, "").substring(0,5);
@@ -50,14 +47,9 @@ class OrderReceipt{
         }).join("")
 
         const discountLineReceipt = this.receiptDiscount > 0 ? 
-            `<p class="itemized-line">Discount <span class="margin-left-auto">- $${this.receiptDiscount}</span></p>
+            `<p class="itemized-line">Discount <span class="margin-left-auto">- $${this.receiptDiscount.toFixed(2)}</span></p>
             <hr>` 
             : ""
-
-        // Dont render a discount line if a discount was not given
-        // render the name of the discount?? 
-
-        //                 <p class="itemized-line">Discount <span class="margin-left-auto">- $${this.receiptDiscount}</span></p>
 
         return `            
             <div class="receipt">
@@ -66,7 +58,7 @@ class OrderReceipt{
                 ${itemList}
                 <hr>
                 ${discountLineReceipt}
-                <p class="itemized-line bold">Total sum <span class="margin-left-auto">$${this.receiptSumAfterDiscount}</span></p>
+                <p class="itemized-line bold">Total sum <span class="margin-left-auto">$${this.receiptSumAfterDiscount.toFixed(2)}</span></p>
                 <br>
                 <p>Customer: 
                 <br>${this.customerName}</p>
@@ -85,7 +77,6 @@ document.addEventListener("click", function(e){
 
     if(e.target.dataset.order){
         const currentItem = menuArray.filter(function(menuItem){
-            console.log( typeof menuItem.id)
             return menuItem.id.toString() === e.target.dataset.order;
         })[0]
         
@@ -93,33 +84,34 @@ document.addEventListener("click", function(e){
     }
 
     else if (e.target.id === "order-btn" && order.length > 0){
-        paymentModalEl.classList.remove("display-none")
+        toggleDisplay("payment-modal", true);
     }
 
     else if (e.target.dataset.remove){
         removeItem(e.target.dataset.remove)
     }
+
     else if (e.target.dataset.close){
-        document.getElementById(e.target.dataset.close).classList.add("display-none")
+        toggleDisplay(e.target.dataset.close, false)
     }
     else if (e.target.id === "pay-btn"){
         e.preventDefault();
 
         if(document.getElementById("payment-form").reportValidity()){
-            paymentModalEl.classList.add("display-none");
-            orderConfirmationModalEl.classList.remove("display-none");
-
+            
+            toggleDisplay("payment-modal", false);
 
             const customerName = document.querySelector("#name").value;
             const creditcardNumber = document.querySelector("#card-number").value;
 
             const orderReceipt = new OrderReceipt(order, orderSum, discountSum, customerName, creditcardNumber);
 
+            ordersArr.push(orderReceipt);
+
             renderOrderConfirmationModal(orderReceipt);
+
+
         }
-
-        // function to toggle display-none on classes? 
-
 
         // clear all orderfields and the orderList, discount code etc.
 
@@ -132,22 +124,23 @@ document.addEventListener("click", function(e){
         if(!ratingGiven){
             renderStarsGiven(e.target.dataset.star);
             ratingGiven = true;
-            document.getElementById("feedback-to-user-after-rating").classList.remove("display-none")
+            toggleDisplay("feedback-to-user-after-rating", true)
         }
         else{
-            document.getElementById("double-voting-error-message").classList.remove("display-none")
+            toggleDisplay("double-voting-error-message", true)
         }
     }
 
-    // else if (e.target.id === "close-order-confirmation-btn"){
-    //     document.getElementById()
-    // }
-
 })
 
-// function toggleShow(elementID){
-//     document.getElementById(elementID).toggle("display-none");
-// }
+function toggleDisplay(elementID, willDisplay){
+    if(willDisplay){
+        document.getElementById(elementID).classList.remove("display-none");
+    }
+    else if (!willDisplay){
+        document.getElementById(elementID).classList.add("display-none");
+    }
+}
 
 function resetOrder(){
     // Clear orderlist
@@ -157,9 +150,7 @@ function resetOrder(){
 
 function renderOrderConfirmationModal(receipt){
 
-    const orderConfirmationModalEl = document.getElementById("order-confirmation-modal");
-
-    orderConfirmationModalEl.classList.remove("display.none");
+    toggleDisplay("order-confirmation-modal", true)
 
     const customerFirstName = receipt.customerName.split(" ");
     document.getElementById("thank-you-customer").innerHTML = `<h1 class="bold">Thank you, ${customerFirstName[0]}!</h1>`
@@ -256,6 +247,7 @@ function getMenuHtml(){
     }).join("")
 
     return menuHtml;
+
 }
 
 function renderOrder(){ 
@@ -345,13 +337,11 @@ function renderDiscount(){
 
 }
 
-
 function clearOrderSection(){
-    // add these to global: 
     orderEl.innerHTML = "";
     totalSumEl.innerHTML = "";
     discountEl.innerHTML = "";
-    discountCodeEl.classList.add("display-none")
+    toggleDisplay("discount-code-el", false)
 }
 
 function renderOrderSection(discountAdded = false){ 
@@ -364,15 +354,13 @@ function renderOrderSection(discountAdded = false){
 
     calculateOrderSum(); 
 
-    //change discount-sum-line to discount-el? 
-
     document.getElementById("order-btn").disabled = order.length > 0 ? false : true;
     
     if (order.length === 0){
         clearOrderSection()
     }
     else{
-        discountCodeEl.classList.remove("display-none")
+        toggleDisplay("discount-code-el", true);
         renderOrder()
         renderDiscount();
         renderTotalSum();
