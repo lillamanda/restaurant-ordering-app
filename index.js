@@ -23,7 +23,10 @@ let ratingGiven = false;
 
 class OrderReceipt{
     constructor(currentOrderList, currentOrderSum, currentDiscountSum, customerName, creditcard){
-        // I know a uuid isn't needed in this case, and order numerations would ideally be sequential, but I wanted to practice it :)
+
+        // Note: I know a uuid isn't needed in this case, and that it should probably not be manipulated in this way. 
+        // Also, order numerations would ideally be sequential, but I wanted to practice using UUID, 
+        // - and the manipulation of the string was just added bonus practice :)
         this.uuid = uuidv4().replace(/\D/g, "").substring(0,5);
 
         this.orderedItems = currentOrderList; 
@@ -46,22 +49,27 @@ class OrderReceipt{
             ` 
         }).join("")
 
+        const discountLineReceipt = this.receiptDiscount > 0 ? 
+            `<p class="itemized-line">Discount <span class="margin-left-auto">- $${this.receiptDiscount}</span></p>
+            <hr>` 
+            : ""
 
         // Dont render a discount line if a discount was not given
         // render the name of the discount?? 
+
+        //                 <p class="itemized-line">Discount <span class="margin-left-auto">- $${this.receiptDiscount}</span></p>
 
         return `            
             <div class="receipt">
                 <h1>Order receipt</h1>
                 <p>Order ID: ${this.uuid}</p>
-                <br>
                 ${itemList}
                 <hr>
-                <p class="itemized-line">Discount <span class="margin-left-auto">- $${this.receiptDiscount}</span></p>
-                <hr>
+                ${discountLineReceipt}
                 <p class="itemized-line bold">Total sum <span class="margin-left-auto">$${this.receiptSumAfterDiscount}</span></p>
                 <br>
-                <p>Customer: ${this.customerName}</p>
+                <p>Customer: 
+                <br>${this.customerName}</p>
                 <p>Paid with creditcard: 
                 <br>${this.creditcardBlanked}</p>
             </div>`
@@ -97,33 +105,30 @@ document.addEventListener("click", function(e){
     else if (e.target.id === "pay-btn"){
         e.preventDefault();
 
-        // function to toggle modal? 
-        paymentModalEl.classList.add("display-none");
-        orderConfirmationModalEl.classList.remove("display-none");
+        if(document.getElementById("payment-form").reportValidity()){
+            paymentModalEl.classList.add("display-none");
+            orderConfirmationModalEl.classList.remove("display-none");
 
 
-        const customerName = document.querySelector("#name").value;
-        const creditcardNumber = document.querySelector("#card-number").value;
+            const customerName = document.querySelector("#name").value;
+            const creditcardNumber = document.querySelector("#card-number").value;
 
-        // create OrderReceipt
-        const orderReceipt = new OrderReceipt(order, orderSum, discountSum, customerName, creditcardNumber);
+            const orderReceipt = new OrderReceipt(order, orderSum, discountSum, customerName, creditcardNumber);
 
-        // ordersArr.push(orderReceipt)
-        renderOrderConfirmationModal(orderReceipt);
+            renderOrderConfirmationModal(orderReceipt);
+        }
 
-        // clear all orderfields
+        // function to toggle display-none on classes? 
 
-        // provide a star-review-option to be stored somewhere?
 
-        // add all info from fields into new const and log this out. - or save it to an object array in data.js
-        // close modal, give a new pop up with "order received - and a star-rating?"
+        // clear all orderfields and the orderList, discount code etc.
+
     }
     else if (e.target.id === "add-discount-btn"){
         validateAndSetDiscountCode(discountCodeInputEl.value)
     }
 
-    else if (e.target.dataset.star){
-        
+    else if (e.target.dataset.star){    
         if(!ratingGiven){
             renderStarsGiven(e.target.dataset.star);
             ratingGiven = true;
@@ -134,7 +139,21 @@ document.addEventListener("click", function(e){
         }
     }
 
+    // else if (e.target.id === "close-order-confirmation-btn"){
+    //     document.getElementById()
+    // }
+
 })
+
+// function toggleShow(elementID){
+//     document.getElementById(elementID).toggle("display-none");
+// }
+
+function resetOrder(){
+    // Clear orderlist
+    // Clear discount
+    // Clear payment form fields
+}
 
 function renderOrderConfirmationModal(receipt){
 
@@ -143,26 +162,14 @@ function renderOrderConfirmationModal(receipt){
     orderConfirmationModalEl.classList.remove("display.none");
 
     const customerFirstName = receipt.customerName.split(" ");
-    console.log(customerFirstName)
-    console.log(customerFirstName[0])
-    document.getElementById("thank-you-customer").innerHTML = `Thank you, ${customerFirstName[0]}!`
+    document.getElementById("thank-you-customer").innerHTML = `<h1 class="bold">Thank you, ${customerFirstName[0]}!</h1>`
 
-    // I'm getting names form form - should I use something other than innerHTML?
+    // I'm getting names from form - should I use something other than innerHTML?
     document.getElementById("order-information-el").innerHTML = receipt.getReceiptHtml();
-
-    // Thank you, NAME
-    //receipt
-
-    // Rate your order experience staricons - fill them or not based on where the user clicks
 }
-
-// console.log(document.getElementsByClassName("rating-stars"))
-// console.log(typeof document.getElementsByClassName("rating-stars"))
-
 
 function renderStarsGiven(numberOfStarsClicked){
     const ratingStars = document.getElementsByClassName("rating-stars"); 
-    // resetStars(ratingStars);
 
     for (let i = 0; i < numberOfStarsClicked; i++){
         ratingStars[i].classList.remove("fa-regular");
@@ -170,22 +177,7 @@ function renderStarsGiven(numberOfStarsClicked){
     }
 }
 
-// function resetStars(stars){
-//     rateExperienceEl.innerHTML = `
-//         <i class="fa-regular fa-star rating-stars" data-star="1"></i>
-//         <i class="fa-regular fa-star rating-stars" data-star="2"></i>
-//         <i class="fa-regular fa-star rating-stars" data-star="3"></i>
-//         <i class="fa-regular fa-star rating-stars" data-star="4"></i>
-//         <i class="fa-regular fa-star rating-stars" data-star="5"></i>
-//         `
-//     // for (let i = 0; i<stars.length; i++){    
-//     //     stars[i].classList.add("fa-regular");
-//     //     stars[i].classList.remove("fa-solid")
-//     // }
-// }
-
 // can not give discount on beer? Should there be a "discount-eligibility"-property on the menu-items? 
-
 function validateAndSetDiscountCode(inputCode){    
     // const inputCode = discountCodeInputEl.value;
 

@@ -20,6 +20,7 @@ main{
     width: 150px;
     margin: auto;
     text-align: center;
+    margin-top: 35px;
 }
 .receipt p{
     margin: 5px 0px;
@@ -43,6 +44,7 @@ main{
 }
 
 .modal form{
+    margin-top: 45px;
     display: flex; 
     flex-direction: column;
     align-items: stretch;
@@ -78,9 +80,18 @@ main{
     margin-left: 10px;
 }
 
+.rate-experience-el{
+    /* margin: 45px auto; */
+    margin-top: 45px;
+}
 
+/* Add color to the rating-stars? */
 
 /* IMAGES, ICONS, BUTTONS, INPUT FORMATTING */
+
+.rating-stars{
+    color: #16DB99;
+}
 
 .item-img{
     width: 80px;
@@ -203,16 +214,12 @@ h1{
     background-color: white;
     text-align: center;
     padding: 20px;
+    padding: 50px 20px;
     width: 490px;
     position: fixed;
     top: 260;
     left: 35;
     box-shadow: 0 0 150px 0px black;
-}
-
-.modal h1{
-    margin-bottom: 45px;
-    margin-top: 35px;
 }
 
 .modal input{

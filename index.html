@@ -52,8 +52,12 @@
             </div>
 
             <div class="modal display-none" id="payment-modal">
-                <div class="close-modal"><i class="fa-xl fa-solid fa-xmark" data-close="payment-modal"></i></div>
+                <div class="close-modal">
+                    <i class="fa-xl fa-solid fa-xmark" data-close="payment-modal"></i>
+                </div>
+
                 <h1>Enter card details</h1>
+
                 <form id="payment-form">
                     <input required 
                         type="text" 
@@ -91,55 +95,42 @@
             </div>
 
             <div class="modal display-none" id="order-confirmation-modal">
-                <div class="close-modal"><i class="fa-xl fa-solid fa-xmark" data-close="order-confirmation-modal"></i></div>
+                <div class="close-modal">
+                    <i class="fa-xl fa-solid fa-xmark" data-close="order-confirmation-modal"></i>
+                </div>
 
                 <div id="thank-you-customer"></div>
 
-                <div id="order-information-el">
-                    <!-- <div class="receipt">
-                        <h1>Order receipt</h1>
-                        <p>Order ID: ${uuid}</p>
-                        <br>
-                        ${itemList}
-                        <hr>
-                        <p class="itemized-line">Discount <span id="margin-left-auto">- $${this.receiptDiscount}</span></p>
-                        <hr>
-                        <p class="itemized-line bold">Total sum <span id="margin-left-auto">$${this.receiptSumAfterDiscount}</span></p>
-                        <br>
-                        <p>Customer: ${this.customerName}</p>
-                        <p>Paid with creditcard: 
-                        <br>${this.creditcardBlanked}</p>
-                    </div> -->
-                </div> 
-                <div id="rate-experience-el">
-                    <!-- <i class="fa-solid fa-star"></i> -->
+                <div id="order-information-el"></div> 
+
+                <div class="rate-experience-el" id="rate-experience-el">
+                    <p class="small">Rate your order experience</p>
+                    
                     <i class="fa-regular fa-star rating-stars" data-star="1"></i>
                     <i class="fa-regular fa-star rating-stars" data-star="2"></i>
                     <i class="fa-regular fa-star rating-stars" data-star="3"></i>
                     <i class="fa-regular fa-star rating-stars" data-star="4"></i>
                     <i class="fa-regular fa-star rating-stars" data-star="5"></i>
-                    <p class="display-none" id="feedback-to-user-after-rating">Thank you for your feedback!</p>
-                    <p class="small display-none" id="double-voting-error-message"> Sorry, you can only give feedback once per order </p>
+                    <p class="display-none" id="feedback-to-user-after-rating">
+                        Thank you for your feedback!
+                    </p>
+
+                    <p class="small display-none" id="double-voting-error-message"> 
+                        Sorry, you can only give feedback once per order 
+                    </p>
                 </div>
+
+                <button class="btn" data-close="order-confirmation-modal">Close</button>
+
             </div>
 
-            <!-- <div class="receipt">
-                <h1>Order receipt</h1>
-                <p class="itemized-line display-flex-align-center">2 Pizza <span class="margin-left-auto">$30</span></p>
-                <p class="itemized-line display-flex-align-center">1 Hamburger <span class="margin-left-auto">$12</span></p>
-                <hr>
-                <p class="itemized-line display-flex-align-center">Discount <span class="margin-left-auto">- $10</span></p>
-                <hr>
-                <p class="itemized-line display-flex-align-center bold">Total sum <span class="margin-left-auto">$32</span></p>
-                <br>
-                <p>Customer: Name Namesen</p>
-                <p>Paid with creditcard: <br>**** **** **** 9232</p>
-            </div> -->
 
         </main>
 
 
-	<script src="index.js" type="module"></script>
+	    <script src="index.js" type="module"></script>
+
     </body>
+
 </html>
 
