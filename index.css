@@ -16,14 +16,12 @@ main{
 
 /* LAYOUT */
 
-.receipt{
-    width: 200px;
-    margin: auto;
-    text-align: center;
-    margin-top: 35px;
+.margin-left-auto{
+    margin-left: auto;
 }
-.receipt p{
-    margin: 5px 0px;
+
+.slight-indent{
+    margin-left: 10px;
 }
 
 .discount-code-el,
@@ -32,15 +30,57 @@ main{
     align-items: center;
 }
 
+.menu-item{
+    border-bottom: 1.5px solid #d2d2d2;
+    padding: 30px 0px 30px 0px;
+}
+
+.item-info h1{
+    margin-bottom: 0px;
+}
+
+.item-info p{
+    margin-top: 2px;
+    margin-bottom: 14px;
+}
+
+.order-section h1{
+    text-align: center;
+    margin-top: 45px;
+    margin-bottom: 30px;
+}
+
+.order-list{
+    border-bottom: 2px solid black;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
 .discount-code-el{
     justify-content: flex-end;
     gap: 10px;
     margin-top: 15px;
 }
 
-.menu-item{
-    border-bottom: 1.5px solid #d2d2d2;
-    padding: 30px 0px 30px 0px;
+.discount-line{
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #074530;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    width: 300px;
+    bottom: 100%; 
+    left: 75%;
+    margin-left: -170px; 
 }
 
 .modal form{
@@ -51,53 +91,24 @@ main{
     gap: 20px;
 }
 
-.margin-left-auto{
-    margin-left: auto;
-}
-
-.item-info h1{
-    margin-bottom: 0px;
-}
-
-.order-section h1{
+.receipt{
+    width: 200px;
+    margin: auto;
     text-align: center;
-    margin-top: 45px;
-    margin-bottom: 30px;
+    margin-top: 35px;
 }
 
-.item-info p{
-    margin-top: 2px;
-    margin-bottom: 14px;
-}
-
-.order-list{
-    border-bottom: 2px solid black;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-}
-
-.slight-indent{
-    margin-left: 10px;
+.receipt p{
+    margin: 5px 0px;
 }
 
 .rate-experience-el{
-    /* margin: 45px auto; */
     margin-top: 45px;
 }
 
-/* Add color to the rating-stars? */
 
-/* IMAGES, ICONS, BUTTONS, INPUT FORMATTING */
 
-.rating-stars{
-    color: #16DB99;
-}
-
-.item-img{
-    width: 80px;
-    height: 80px;
-    padding-right: 30px;
-}
+/* BUTTONS, INPUT AND INTERACTIVE ELEMENTS */ 
 
 .btn,
 .add-item-btn, 
@@ -114,20 +125,6 @@ main{
     margin-top: 30px; 
 }
 
-.btn:active, 
-.btn:hover, 
-.add-discount-btn:active, 
-.add-discount-btn:hover{
-    background-color: #36f8b7;
-}
-
-.btn:disabled, 
-form:invalid button{
-    background-color: rgb(219, 219, 219);
-    color: #757575;
-    cursor: not-allowed;
-}
-
 .add-discount-btn,
 .discount-code-el input{
     padding: 5px 10px; 
@@ -140,8 +137,37 @@ form:invalid button{
     border: none;
 }
 
+.btn:active, 
+.btn:hover, 
+.add-discount-btn:active, 
+.add-discount-btn:hover{
+    background-color: #36f8b7;
+}
+
+.btn:disabled,
+form:invalid button:hover,
+form:invalid button{
+    background-color: rgb(219, 219, 219);
+    color: #757575;
+    cursor: not-allowed;
+}
+
+.rating-stars{
+    color: #16DB99;
+}
+
 .discount-code-el input{
     border: 1px solid black; 
+}
+
+
+
+/* IMAGES */
+
+.item-img{
+    width: 80px;
+    height: 80px;
+    padding-right: 30px;
 }
 
 
@@ -170,16 +196,9 @@ h1{
     font-weight: 400;
 }
 
-/* Use P here? */
-.item-price, 
-.ordered-item-price, 
 .discount-line,
-.modal{
+p{
     font-size: 20px;
-}
-
-.discount-line{
-    margin-bottom: 8px;
 }
 
 .item-ingredient-list,
@@ -198,28 +217,6 @@ h1{
 .faded-text{
     color: #8B8B8B;
 }
-
-.tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: #074530;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-   
-    position: absolute;
-    z-index: 1;
-    width: 300px;
-    bottom: 100%; 
-    left: 75%;
-    margin-left: -170px; 
-}
-
-.discount-line{
-    position: relative;
-}
-
 
 
 /* SPECIAL FORMATTING CLASSES */
@@ -265,13 +262,11 @@ h1{
     box-shadow: 0 0 150px 0px black;
 }
 
-
 .modal input{
     padding: 20px;
     border-radius: 4px;
     border: 1px solid #757575;
 }
-
 
 .close-modal{
     display: flex; 

@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 const discountCodeInputEl = document.getElementById("discount-code-input");
 const discountFeedbackMsgEl = document.getElementById("discount-feedback-msg");
 
+const ratingStars = document.getElementsByClassName("rating-stars"); 
+
 const orderEl = document.getElementById("order-el");
 const totalSumEl = document.getElementById("total-sum-el");
 const discountEl = document.getElementById("discount-el");
@@ -19,6 +21,9 @@ let discountSum = 0;
 let totalSumAfterDiscount = 0;
 
 let ratingGiven = false;
+
+
+/* Classes */
 
 class OrderReceipt{
     constructor(currentOrderList, currentOrderSum, currentDiscountSum, customerName, creditcard){
@@ -63,7 +68,7 @@ class OrderReceipt{
 
             const priceSpan = document.createElement("span");
             priceSpan.setAttribute("class", "margin-left-auto");
-            priceSpan.innerText = price; 
+            priceSpan.innerText = `$${(price*orderAmount).toFixed(2)}`; 
 
             itemizedLine.appendChild(priceSpan);
             receiptHtmlElement.appendChild(itemizedLine);
@@ -95,7 +100,7 @@ class OrderReceipt{
 
         const totalSumSpan = document.createElement("span");
         totalSumSpan.setAttribute("class", "margin-left-auto"); 
-        totalSumSpan.innerText = `- $${this.receiptSumAfterDiscount.toFixed(2)}`
+        totalSumSpan.innerText = `$${this.receiptSumAfterDiscount.toFixed(2)}`
 
         totalSumLineP.appendChild(totalSumSpan);
         receiptHtmlElement.appendChild(totalSumLineP);
@@ -131,6 +136,9 @@ class OrderReceipt{
 
 }
 
+
+/* Event listeners */
+
 document.addEventListener("mouseover", function(e){
     if(e.target.id === "discount-line"){
         if (addedDiscountCode.minimumOrderSum > orderSum){
@@ -142,12 +150,6 @@ document.addEventListener("mouseover", function(e){
     }
 
 })
-
-document.querySelector("#discount-code-input").addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        document.getElementById("add-discount-btn").click();
-    }
-});
 
 document.addEventListener("click", function(e){
 
@@ -214,53 +216,64 @@ document.addEventListener("click", function(e){
 
 })
 
-function processOrder(){
+discountCodeInputEl.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        document.getElementById("add-discount-btn").click();
+    }
+});
 
-    const customerName = document.querySelector("#name").value;
-    const creditcardNumber = document.querySelector("#card-number").value;
 
-    const orderReceipt = new OrderReceipt(order, orderSum, discountSum, customerName, creditcardNumber);
+/* Render Menu */
 
-    ordersArr.push(orderReceipt);
+function renderMenu(){
+    document.getElementById("menu").innerHTML = getMenuHtml();
+}
 
-    renderOrderConfirmationModal(orderReceipt);
+function getMenuHtml(){
 
-    resetOrder();
+    const menuHtml = menuArray.map(function(menuItem){
+        const {image, name, ingredients, price, id} = menuItem;
+
+        return `                
+        <div class="itemized-line menu-item">
+            <img class="item-img" alt="picture of ${name}" src="img/${image}">
+            <div class="item-info">
+                <h1>${name}</h1>
+                <p class="item-ingredient-list">${ingredients.join(", ")}</p>
+                <p>$${price}</p>
+            </div>
+            <img src="img/addbtn.png" alt="button to add item" class="margin-left-auto add-item-btn" data-order="${id}">
+        </div>` 
+    }).join("")
+
+    return menuHtml;
+
+}
+
+
+/* Add or remove items/discounts to order */
+
+function addToCart(item){
+    item.orderAmount += 1;
+
+    if(!order.includes(item)){
+        order.push(item)
+    }
+
     renderOrderSection();
 }
 
-function toggleDisplay(elementID, willDisplay){
-    if(willDisplay){
-        document.getElementById(elementID).classList.remove("display-none");
+function removeItem(itemId){
+    const orderItem = order.filter(item => item.id.toString() === itemId)[0];
+
+    orderItem.orderAmount -= 1; 
+
+    if(orderItem.orderAmount <= 0){
+        const filteredOrder = order.filter(item => item !== orderItem)
+        order = filteredOrder;
     }
-    else if (!willDisplay){
-        document.getElementById(elementID).classList.add("display-none");
-    }
-}
 
-function resetOrder(){
-    order = [];
-    addedDiscountCode = null;
-    document.querySelector("#payment-form").reset(); 
-}
-
-function renderOrderConfirmationModal(receipt){
-
-    toggleDisplay("order-confirmation-modal", true)
-
-    const customerFirstName = receipt.customerName.split(" ");
-    document.getElementById("thank-you-customer").innerHTML = `<h1 class="bold">Thank you, ${customerFirstName[0]}!</h1>`
-
-    document.getElementById("order-information-el").appendChild(receipt.getReceiptHtmlElement());
-}
-
-function renderStarsGiven(numberOfStarsClicked){
-    const ratingStars = document.getElementsByClassName("rating-stars"); 
-
-    for (let i = 0; i < numberOfStarsClicked; i++){
-        ratingStars[i].classList.remove("fa-regular");
-        ratingStars[i].classList.add("fa-solid")
-    }
+    renderOrderSection()
 }
 
 function validateAndSetDiscountCode(inputCode){    
@@ -288,95 +301,8 @@ function validateAndSetDiscountCode(inputCode){
 
 }
 
-function resetDiscountFeedback(){
-    discountFeedbackMsgEl.textContent = ""
-    discountFeedbackMsgEl.classList.remove("error-msg")
-    discountCodeInputEl.classList.remove("input-error")
-    discountCodeInputEl.value="";
-}
 
-function addToCart(item){
-    item.orderAmount += 1;
-
-    if(!order.includes(item)){
-        order.push(item)
-    }
-
-    renderOrderSection();
-}
-
-function removeItem(itemId){
-    const orderItem = order.filter(item => item.id.toString() === itemId)[0];
-
-    orderItem.orderAmount -= 1; 
-
-    if(orderItem.orderAmount <= 0){
-        const filteredOrder = order.filter(item => item !== orderItem)
-        order = filteredOrder;
-    }
-
-    renderOrderSection()
-}
-
-function renderMenu(){
-    document.getElementById("menu").innerHTML = getMenuHtml();
-}
-
-function getMenuHtml(){
-
-    const menuHtml = menuArray.map(function(menuItem){
-        const {image, name, ingredients, price, id} = menuItem;
-
-        return `                
-        <div class="itemized-line menu-item">
-            <img class="item-img" alt="picture of ${name}" src="img/${image}">
-            <div class="item-info">
-                <h1>${name}</h1>
-                <p class="item-ingredient-list">${ingredients.join(", ")}</p>
-                <p class="item-price">$${price}</p>
-            </div>
-            <img src="img/addbtn.png" alt="button to add item" class="margin-left-auto add-item-btn" data-order="${id}">
-        </div>` 
-    }).join("")
-
-    return menuHtml;
-
-}
-
-function renderOrder(){ 
-
-    const orderHtml = order.map(function(item){
-        const {name, price, id, orderAmount} = item; 
-        
-        return `                    
-        <div class="itemized-line ordered-item">
-            <span class="ordered-item-amount">${orderAmount}</span> 
-            <span class="slight-indent">${name}</span>
-            <span class="slight-indent remove-item" data-remove="${id}">remove</span>
-            <span class="margin-left-auto ordered-item-price">$${price*orderAmount}</span>
-        </div>
-        ` 
-
-    }).join("");
-
-    orderEl.innerHTML = `
-        <div class="order-list" id="order">
-            ${orderHtml}
-        </div>`
-
-}
-
-function renderTotalSum(){
-
-    // calculateOrderSum();
-    // renderDiscount()
-
-    totalSumEl.innerHTML = `   
-    <div class="itemized-line total-sum">
-        Total price: <span class="margin-left-auto">$${totalSumAfterDiscount.toFixed(2)}</span>
-    </div>`
-
-}
+/* Calculations */
 
 function calculateOrderSum(){
     orderSum = order.reduce(function(total, currentItem){
@@ -405,6 +331,65 @@ function calculateDiscount(){
     }
 }
 
+
+/* General functions */
+
+function toggleDisplay(elementID, willDisplay){
+    if(willDisplay){
+        document.getElementById(elementID).classList.remove("display-none");
+    }
+    else if (!willDisplay){
+        document.getElementById(elementID).classList.add("display-none");
+    }
+}
+
+
+/* Rendering Order */
+
+function renderOrderSection(discountAdded = false){ 
+
+    if(!discountAdded){
+        resetDiscountFeedback();
+    }
+
+    calculateOrderSum(); 
+
+    document.getElementById("order-btn").disabled = order.length > 0 ? false : true;
+    
+    if (order.length === 0){
+        clearOrderSection()
+    }
+    else{
+        toggleDisplay("discount-code-el", true);
+        renderOrderedItems()
+        renderDiscount();
+        renderTotalSum();
+    }
+}
+
+function renderOrderedItems(){ 
+
+    const orderHtml = order.map(function(item){
+        const {name, price, id, orderAmount} = item; 
+        
+        return `                    
+        <div class="itemized-line ordered-item">
+            <span class="ordered-item-amount">${orderAmount}</span> 
+            <span class="slight-indent">${name}</span>
+            <span class="slight-indent remove-item" data-remove="${id}">remove</span>
+            <span class="margin-left-auto">$${price*orderAmount}</span>
+        </div>
+        ` 
+
+    }).join("");
+
+    orderEl.innerHTML = `
+        <div class="order-list" id="order">
+            ${orderHtml}
+        </div>`
+
+}
+
 function renderDiscount(){
 
     let discountHtml = "";
@@ -430,6 +415,65 @@ function renderDiscount(){
     
 }
 
+function renderTotalSum(){
+
+    totalSumEl.innerHTML = `   
+    <div class="itemized-line total-sum">
+        Total price: <span class="margin-left-auto">$${totalSumAfterDiscount.toFixed(2)}</span>
+    </div>`
+
+}
+
+function processOrder(){
+
+    const customerName = document.querySelector("#name").value;
+    const creditcardNumber = document.querySelector("#card-number").value;
+
+    const orderReceipt = new OrderReceipt(order, orderSum, discountSum, customerName, creditcardNumber);
+
+    ordersArr.push(orderReceipt);
+
+    renderOrderConfirmationModal(orderReceipt);
+
+    resetOrder();
+    renderOrderSection();
+}
+
+function renderOrderConfirmationModal(receipt){
+    resetStarRating();
+
+    toggleDisplay("order-confirmation-modal", true);
+
+    const customerFirstName = receipt.customerName.split(" ");
+    document.getElementById("thank-you-customer").innerHTML = `<h1 class="bold">Thank you, ${customerFirstName[0]}!</h1>`
+
+    const orderInformationEl = document.getElementById("order-information-el"); 
+    orderInformationEl.innerHTML = "";
+    document.getElementById("order-information-el").appendChild(receipt.getReceiptHtmlElement());
+}
+
+function renderStarsGiven(numberOfStarsClicked){
+    for (let i = 0; i < numberOfStarsClicked; i++){
+        ratingStars[i].classList.remove("fa-regular");
+        ratingStars[i].classList.add("fa-solid")
+    }
+}
+
+
+/* Reset and clear */
+
+function resetOrder(){
+    menuArray.forEach(function(menuItem) {
+        menuItem.orderAmount = 0;
+    })
+
+    console.log(menuArray)
+
+    order = [];
+    addedDiscountCode = null;
+    document.querySelector("#payment-form").reset(); 
+}
+
 function clearOrderSection(){
     orderEl.innerHTML = "";
     totalSumEl.innerHTML = "";
@@ -437,29 +481,26 @@ function clearOrderSection(){
     toggleDisplay("discount-code-el", false)
 }
 
-function renderOrderSection(discountAdded = false){ 
-
-    if(!discountAdded){
-        resetDiscountFeedback();
-    }
-
-    calculateOrderSum(); 
-
-    document.getElementById("order-btn").disabled = order.length > 0 ? false : true;
-    
-    if (order.length === 0){
-        clearOrderSection()
-    }
-    else{
-        toggleDisplay("discount-code-el", true);
-        renderOrder()
-        renderDiscount();
-        renderTotalSum();
-    }
+function resetDiscountFeedback(){
+    discountFeedbackMsgEl.textContent = ""
+    discountFeedbackMsgEl.classList.remove("error-msg")
+    discountCodeInputEl.classList.remove("input-error")
+    discountCodeInputEl.value="";
 }
+
+function resetStarRating(){
+    ratingGiven = false;
+
+    for (let i = 0; i < ratingStars.length; i++){
+        ratingStars[i].classList.add("fa-regular");
+        ratingStars[i].classList.remove("fa-solid")
+    }
+
+    toggleDisplay("feedback-to-user-after-rating", false); 
+}
+
+
 
 // add app functionality from shopping-app? 
 // see if functions can be called from within each other more efficiently
-// structure the functions in the correct order
-// sort CSS
 

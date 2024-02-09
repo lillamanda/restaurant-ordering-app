@@ -7,7 +7,6 @@ const menuArray = [
         price: 14,
         emoji: "🍕", 
         orderAmount: 0, 
-        // eligibleForDiscount: true
     },
     {
         name: "Hamburger",
@@ -17,7 +16,6 @@ const menuArray = [
         emoji: "🍔",
         id: 1, 
         orderAmount: 0, 
-        // eligibleForDiscount: true
     },
         {
         name: "Beer",
@@ -27,7 +25,6 @@ const menuArray = [
         emoji: "🍺",
         id: 2, 
         orderAmount: 0, 
-        // eligibleForDiscount: false
     }
 ]
 
