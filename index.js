@@ -336,7 +336,7 @@ function getMenuHtml(){
                 <p class="item-price">$${price}</p>
             </div>
             <img src="img/addbtn.png" alt="button to add item" class="margin-left-auto add-item-btn" data-order="${id}">
-        </div>` 1
+        </div>` 
     }).join("")
 
     return menuHtml;
