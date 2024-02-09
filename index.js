@@ -467,8 +467,6 @@ function resetOrder(){
         menuItem.orderAmount = 0;
     })
 
-    console.log(menuArray)
-
     order = [];
     addedDiscountCode = null;
     document.querySelector("#payment-form").reset(); 
@@ -498,9 +496,4 @@ function resetStarRating(){
 
     toggleDisplay("feedback-to-user-after-rating", false); 
 }
-
-
-
-// add app functionality from shopping-app? 
-// see if functions can be called from within each other more efficiently
 
