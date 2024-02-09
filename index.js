@@ -71,9 +71,13 @@ class OrderReceipt{
 
 renderMenu();
 
-document.addEventListener("click", function(e){
+document.querySelector("#discount-code-input").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        document.getElementById("add-discount-btn").click();
+    }
+});
 
-    // Add one for closing modal - if user clicks outside of the modal when its open 
+document.addEventListener("click", function(e){
 
     if(e.target.dataset.order){
         const currentItem = menuArray.filter(function(menuItem){
@@ -94,6 +98,7 @@ document.addEventListener("click", function(e){
     else if (e.target.dataset.close){
         toggleDisplay(e.target.dataset.close, false)
     }
+
     else if (e.target.id === "pay-btn"){
         e.preventDefault();
 

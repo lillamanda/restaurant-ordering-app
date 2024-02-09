@@ -106,14 +106,19 @@ main{
 }
 
 .btn{
-    background-color: #16DB99;
-    border: none; 
     color: white; 
     border-radius: 3px;
     width: 100%;
     padding: 20px;
     font-weight: bold;
     margin-top: 30px; 
+}
+
+.btn:active, 
+.btn:hover, 
+.add-discount-btn:active, 
+.add-discount-btn:hover{
+    background-color: #36f8b7;
 }
 
 .btn:disabled, 
@@ -129,7 +134,8 @@ form:invalid button{
     border-radius: 12px;
 }
 
-.add-discount-btn{
+.add-discount-btn, 
+.btn{
     background-color: #16DB99;
     border: none;
 }
@@ -209,6 +215,18 @@ h1{
 
 
 /* MODAL */
+
+#modal-div{
+    display: none;
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: transparent;
+}
 
 .modal{
     background-color: white;
