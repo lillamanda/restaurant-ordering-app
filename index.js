@@ -8,6 +8,8 @@ const orderEl = document.getElementById("order-el");
 const totalSumEl = document.getElementById("total-sum-el");
 const discountEl = document.getElementById("discount-el");
 
+renderMenu();
+
 let order = [];
 
 let addedDiscountCode;
@@ -35,41 +37,111 @@ class OrderReceipt{
         this.creditcardBlanked = `**** **** **** ${creditcard.trim().substr(-4, 4)}`;
     }
 
-    getReceiptHtml() {
-        const itemList = this.orderedItems.map(function(item){
+    // Since this function uses user input (Name for the order), I built it with elements and innerText to avoid HTML code being passed in with innerHTML
+    getReceiptHtmlElement() {
+
+        const receiptHtmlElement = document.createElement("div");
+        receiptHtmlElement.setAttribute("class", "receipt"); 
+
+
+        const receiptTitle = document.createElement("h1");
+        receiptTitle.innerText = "Order receipt"; 
+        receiptHtmlElement.appendChild(receiptTitle);
+
+
+        const orderIdP = document.createElement("p");
+        orderIdP.innerText = `Order ID: ${this.uuid}`
+        receiptHtmlElement.appendChild(orderIdP)
+
+
+        this.orderedItems.forEach(function(item){
             const { orderAmount, name, price } = item; 
+            
+            const itemizedLine = document.createElement("p"); 
+            itemizedLine.setAttribute("class", "itemized-line"); 
+            itemizedLine.innerText = `${orderAmount} ${name}`;
 
-            return `
-                <p class="itemized-line">${orderAmount} ${name} 
-                    <span class="margin-left-auto">$${price}</span>
-                </p>
-            ` 
-        }).join("")
+            const priceSpan = document.createElement("span");
+            priceSpan.setAttribute("class", "margin-left-auto");
+            priceSpan.innerText = price; 
 
-        const discountLineReceipt = this.receiptDiscount > 0 ? 
-            `<p class="itemized-line">Discount <span class="margin-left-auto">- $${this.receiptDiscount.toFixed(2)}</span></p>
-            <hr>` 
-            : ""
+            itemizedLine.appendChild(priceSpan);
+            receiptHtmlElement.appendChild(itemizedLine);
+        })
 
-        return `            
-            <div class="receipt">
-                <h1>Order receipt</h1>
-                <p>Order ID: ${this.uuid}</p>
-                ${itemList}
-                <hr>
-                ${discountLineReceipt}
-                <p class="itemized-line bold">Total sum <span class="margin-left-auto">$${this.receiptSumAfterDiscount.toFixed(2)}</span></p>
-                <br>
-                <p>Customer: 
-                <br>${this.customerName}</p>
-                <p>Paid with creditcard: 
-                <br>${this.creditcardBlanked}</p>
-            </div>`
+
+        receiptHtmlElement.appendChild(document.createElement("hr"))
+
+
+        if(this.receiptDiscount > 0){
+            const discountLineP = document.createElement("p"); 
+            discountLineP.setAttribute("class", "itemized-line"); 
+            discountLineP.innerText = `Discount `
+
+            const discountSumSpan = document.createElement("span");
+            discountSumSpan.setAttribute("class", "margin-left-auto"); 
+            discountSumSpan.innerText = `- $${this.receiptDiscount.toFixed(2)}`
+
+            discountLineP.appendChild(discountSumSpan);
+            receiptHtmlElement.appendChild(discountLineP);
+
+            receiptHtmlElement.appendChild(document.createElement("hr"))
+        }
+
+
+        const totalSumLineP = document.createElement("p"); 
+        totalSumLineP.setAttribute("class", "itemized-line bold"); 
+        totalSumLineP.innerText = `Total sum `
+
+        const totalSumSpan = document.createElement("span");
+        totalSumSpan.setAttribute("class", "margin-left-auto"); 
+        totalSumSpan.innerText = `- $${this.receiptSumAfterDiscount.toFixed(2)}`
+
+        totalSumLineP.appendChild(totalSumSpan);
+        receiptHtmlElement.appendChild(totalSumLineP);
+
+
+        receiptHtmlElement.appendChild(document.createElement("br"))
+
+
+        const customerP = document.createElement("p"); 
+        customerP.innerText = "Customer";
+        customerP.appendChild(document.createElement("br"));
+        
+        const customerNameSpan = document.createElement("span"); 
+        customerNameSpan.innerText = this.customerName; 
+        
+        customerP.appendChild(customerNameSpan);
+        receiptHtmlElement.appendChild(customerP);
+
+
+        const creditcardP = document.createElement("p"); 
+        creditcardP.innerText = "Paid with creditcard: ";
+        creditcardP.appendChild(document.createElement("br"));
+        
+        const creditCardSpan = document.createElement("span"); 
+        creditCardSpan.innerText = this.creditcardBlanked; 
+        
+        creditcardP.appendChild(creditCardSpan);
+        receiptHtmlElement.appendChild(creditcardP);
+        
+
+        return receiptHtmlElement;
     }
 
 }
 
-renderMenu();
+document.addEventListener("mouseover", function(e){
+    if(e.target.id === "discount-line"){
+        if (addedDiscountCode.minimumOrderSum > orderSum){
+            document.querySelector(".tooltiptext").style.visibility = "visible"
+            setTimeout(() => {
+                document.querySelector(".tooltiptext").style.visibility = "hidden"
+            }, "2500")
+        }   
+    }
+
+})
 
 document.querySelector("#discount-code-input").addEventListener("keypress", function(e) {
     if (e.key === "Enter") {
@@ -92,7 +164,18 @@ document.addEventListener("click", function(e){
     }
 
     else if (e.target.dataset.remove){
-        removeItem(e.target.dataset.remove)
+
+        switch(e.target.dataset.remove) {
+
+            case "discount" :
+                addedDiscountCode = null;
+                renderOrderSection();
+                break;
+
+            default :
+                removeItem(e.target.dataset.remove)
+
+        }
     }
 
     else if (e.target.dataset.close){
@@ -106,21 +189,11 @@ document.addEventListener("click", function(e){
             
             toggleDisplay("payment-modal", false);
 
-            const customerName = document.querySelector("#name").value;
-            const creditcardNumber = document.querySelector("#card-number").value;
-
-            const orderReceipt = new OrderReceipt(order, orderSum, discountSum, customerName, creditcardNumber);
-
-            ordersArr.push(orderReceipt);
-
-            renderOrderConfirmationModal(orderReceipt);
-
+            processOrder();
 
         }
-
-        // clear all orderfields and the orderList, discount code etc.
-
     }
+
     else if (e.target.id === "add-discount-btn"){
         validateAndSetDiscountCode(discountCodeInputEl.value)
     }
@@ -133,10 +206,28 @@ document.addEventListener("click", function(e){
         }
         else{
             toggleDisplay("double-voting-error-message", true)
+            setTimeout(() => {
+                toggleDisplay("double-voting-error-message", false);
+            }, "2500");
         }
     }
 
 })
+
+function processOrder(){
+
+    const customerName = document.querySelector("#name").value;
+    const creditcardNumber = document.querySelector("#card-number").value;
+
+    const orderReceipt = new OrderReceipt(order, orderSum, discountSum, customerName, creditcardNumber);
+
+    ordersArr.push(orderReceipt);
+
+    renderOrderConfirmationModal(orderReceipt);
+
+    resetOrder();
+    renderOrderSection();
+}
 
 function toggleDisplay(elementID, willDisplay){
     if(willDisplay){
@@ -148,9 +239,9 @@ function toggleDisplay(elementID, willDisplay){
 }
 
 function resetOrder(){
-    // Clear orderlist
-    // Clear discount
-    // Clear payment form fields
+    order = [];
+    addedDiscountCode = null;
+    document.querySelector("#payment-form").reset(); 
 }
 
 function renderOrderConfirmationModal(receipt){
@@ -160,8 +251,7 @@ function renderOrderConfirmationModal(receipt){
     const customerFirstName = receipt.customerName.split(" ");
     document.getElementById("thank-you-customer").innerHTML = `<h1 class="bold">Thank you, ${customerFirstName[0]}!</h1>`
 
-    // I'm getting names from form - should I use something other than innerHTML?
-    document.getElementById("order-information-el").innerHTML = receipt.getReceiptHtml();
+    document.getElementById("order-information-el").appendChild(receipt.getReceiptHtmlElement());
 }
 
 function renderStarsGiven(numberOfStarsClicked){
@@ -173,9 +263,7 @@ function renderStarsGiven(numberOfStarsClicked){
     }
 }
 
-// can not give discount on beer? Should there be a "discount-eligibility"-property on the menu-items? 
 function validateAndSetDiscountCode(inputCode){    
-    // const inputCode = discountCodeInputEl.value;
 
     const filteredDiscountCodeArr = discountCodesArr.filter(function(discountCode){
         return discountCode.code === inputCode.trim().toUpperCase();
@@ -264,7 +352,7 @@ function renderOrder(){
         <div class="itemized-line ordered-item">
             <span class="ordered-item-amount">${orderAmount}</span> 
             <span class="slight-indent">${name}</span>
-            <span class="slight-indent remove-ordered-item" data-remove="${id}">remove</span>
+            <span class="slight-indent remove-item" data-remove="${id}">remove</span>
             <span class="margin-left-auto ordered-item-price">$${price*orderAmount}</span>
         </div>
         ` 
@@ -283,9 +371,6 @@ function renderTotalSum(){
     // calculateOrderSum();
     // renderDiscount()
 
-    // OR : return html to render in order
-
-    // Maybe remove total-sum? replace it with h1 or a boldandbig-class?
     totalSumEl.innerHTML = `   
     <div class="itemized-line total-sum">
         Total price: <span class="margin-left-auto">$${totalSumAfterDiscount.toFixed(2)}</span>
@@ -330,16 +415,19 @@ function renderDiscount(){
         const discountPrompt = discountPromptSum ? `Order for $${discountPromptSum} more to qualify for the discount`: "";
         
         discountHtml = `
-        <div class="itemized-line">
+        <div class="itemized-line discount-line" id="discount-line">
             Discount:   
             <span class="slight-indent">${addedDiscountCode.description}</span>
-            <span class="margin-left-auto">${discountPrompt}</span>
-            <span class="margin-left-auto">$${discountSum.toFixed(2)}</span> 
-        </div>`     
+            <span class="slight-indent remove-item" data-remove="discount">remove</span>
+            <span class="margin-left-auto">- $${discountSum.toFixed(2)}</span> 
+            <span class="tooltiptext">${discountPrompt}</span>   
+        </div>`            
+
+
     }
 
     discountEl.innerHTML = discountHtml;
-
+    
 }
 
 function clearOrderSection(){
@@ -350,8 +438,6 @@ function clearOrderSection(){
 }
 
 function renderOrderSection(discountAdded = false){ 
-
-    // add possibility to remove discount code? 
 
     if(!discountAdded){
         resetDiscountFeedback();
@@ -373,4 +459,7 @@ function renderOrderSection(discountAdded = false){
 }
 
 // add app functionality from shopping-app? 
+// see if functions can be called from within each other more efficiently
+// structure the functions in the correct order
+// sort CSS
 

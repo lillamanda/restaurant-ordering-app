@@ -17,7 +17,7 @@ main{
 /* LAYOUT */
 
 .receipt{
-    width: 150px;
+    width: 200px;
     margin: auto;
     text-align: center;
     margin-top: 35px;
@@ -155,7 +155,7 @@ form:invalid button{
 .modal, 
 .btn, 
 .discount-code-el,
-.remove-ordered-item{
+.remove-item{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -173,10 +173,13 @@ h1{
 /* Use P here? */
 .item-price, 
 .ordered-item-price, 
-/* .order-sum, */
-/* .discount-sum,  */
+.discount-line,
 .modal{
     font-size: 20px;
+}
+
+.discount-line{
+    margin-bottom: 8px;
 }
 
 .item-ingredient-list,
@@ -185,14 +188,36 @@ h1{
 }
 
 .small, 
-.remove-ordered-item,
+.remove-item,
 .discount-code-el{
     font-size: 12px;
 }
 
 .item-ingredient-list,
-.remove-ordered-item{
-    color: #BBBBBB;
+.remove-item,
+.faded-text{
+    color: #8B8B8B;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #074530;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+   
+    position: absolute;
+    z-index: 1;
+    width: 300px;
+    bottom: 100%; 
+    left: 75%;
+    margin-left: -170px; 
+}
+
+.discount-line{
+    position: relative;
 }
 
 
@@ -234,11 +259,12 @@ h1{
     padding: 20px;
     padding: 50px 20px;
     width: 490px;
-    position: fixed;
+    position: absolute;
     top: 150;
     left: 35;
     box-shadow: 0 0 150px 0px black;
 }
+
 
 .modal input{
     padding: 20px;
