@@ -329,14 +329,14 @@ function getMenuHtml(){
 
         return `                
         <div class="itemized-line menu-item">
-            <img class="item-img" src="/img/${image}">
+            <img class="item-img" alt="picture of ${name}" src="img/${image}">
             <div class="item-info">
                 <h1>${name}</h1>
                 <p class="item-ingredient-list">${ingredients.join(", ")}</p>
                 <p class="item-price">$${price}</p>
             </div>
-            <img src="/img/add-btn.png" class="margin-left-auto add-item-btn" data-order="${id}">
-        </div>` 
+            <img src="img/addbtn.png" alt="button to add item" class="margin-left-auto add-item-btn" data-order="${id}">
+        </div>` 1
     }).join("")
 
     return menuHtml;
