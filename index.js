@@ -378,7 +378,7 @@ function renderOrderedItems(){
             <span class="ordered-item-amount">${orderAmount}</span> 
             <span class="slight-indent">${name}</span>
             <span class="slight-indent remove-item" data-remove="${id}">remove</span>
-            <span class="margin-left-auto">$${price*orderAmount}</span>
+            <span class="margin-left-auto">$${(price*orderAmount).toFixed(2)}</span>
         </div>
         ` 
 
