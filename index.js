@@ -139,8 +139,9 @@ class OrderReceipt{
 
 /* Event listeners */
 
-document.addEventListener("mouseover", function(e){
-    if(e.target.id === "discount-line"){
+document.getElementById("discount-el").addEventListener("mouseover", function(e){
+
+    if(e.target.id === "discount-line" || e.target.parentElement.id === "discount-line"){
         if (addedDiscountCode.minimumOrderSum > orderSum){
             document.querySelector(".tooltiptext").style.visibility = "visible"
             setTimeout(() => {
@@ -400,11 +401,11 @@ function renderDiscount(){
         const discountPrompt = discountPromptSum ? `Order for $${discountPromptSum} more to qualify for the discount`: "";
         
         discountHtml = `
-        <div class="itemized-line discount-line" id="discount-line">
+        <div class="tooltip itemized-line discount-line" id="discount-line">
             Discount:   
-            <span class="slight-indent">${addedDiscountCode.description}</span>
-            <span class="slight-indent remove-item" data-remove="discount">remove</span>
-            <span class="margin-left-auto">- $${discountSum.toFixed(2)}</span> 
+            <span class="tooltip slight-indent">${addedDiscountCode.description}</span>
+            <span class="tooltip slight-indent remove-item" data-remove="discount">remove</span>
+            <span class="tooltip margin-left-auto">- $${discountSum.toFixed(2)}</span> 
             <span class="tooltiptext">${discountPrompt}</span>   
         </div>`            
 
