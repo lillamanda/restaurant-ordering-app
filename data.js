@@ -2,7 +2,7 @@ const menuArray = [
     {
         name: "Pizza",
         image: "pizza.png",
-        ingredients: ["pepperoni", "mushrom", "mozzarella"],
+        ingredients: ["pepperoni", "mushroom", "mozzarella"],
         id: 0,
         price: 14,
         emoji: "🍕", 
