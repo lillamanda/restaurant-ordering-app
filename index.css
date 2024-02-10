@@ -153,6 +153,7 @@ form:invalid button{
 }
 
 .rating-stars{
+    margin-top: 10px;
     color: #16DB99;
 }
 
