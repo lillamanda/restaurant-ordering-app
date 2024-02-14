@@ -78,7 +78,7 @@ class OrderReceipt{
         receiptHtmlElement.appendChild(document.createElement("hr"))
 
 
-        if(this.receiptDiscount > 0){
+        if(this.receiptDiscount){
             const discountLineP = document.createElement("p"); 
             discountLineP.setAttribute("class", "itemized-line"); 
             discountLineP.innerText = `Discount `
@@ -155,14 +155,18 @@ document.getElementById("discount-el").addEventListener("mouseover", function(e)
 document.addEventListener("click", function(e){
 
     if(e.target.dataset.order){
-        const currentItem = menuArray.filter(function(menuItem){
+        const currentItem = menuArray.find(function(menuItem){
             return menuItem.id.toString() === e.target.dataset.order;
-        })[0]
+        })
+        // ^ instead of the following
+        // const currentItem = menuArray.filter(function(menuItem){
+        //     return menuItem.id.toString() === e.target.dataset.order;
+        // })[0]
         
         addToCart(currentItem)
     }
 
-    else if (e.target.id === "order-btn" && order.length > 0){
+    else if (e.target.id === "order-btn" && order.length){
         toggleDisplay("payment-modal", true);
     }
 
@@ -269,7 +273,7 @@ function removeItem(itemId){
 
     orderItem.orderAmount -= 1; 
 
-    if(orderItem.orderAmount <= 0){
+    if(!orderItem.orderAmount){
         const filteredOrder = order.filter(item => item !== orderItem)
         order = filteredOrder;
     }
@@ -287,7 +291,7 @@ function validateAndSetDiscountCode(inputCode){
 
     let discountFeedbackMsg = "";
 
-    if(filteredDiscountCodeArr.length>0){
+    if(filteredDiscountCodeArr.length){
         addedDiscountCode = filteredDiscountCodeArr[0];
         discountFeedbackMsg = `"${inputCode}" has been added to your order`
         renderOrderSection("discountcode added");
@@ -310,11 +314,8 @@ function calculateOrderSum(){
         const currentItemTotalSum = currentItem.price * currentItem.orderAmount;
         return total + currentItemTotalSum;
     }, 0)
-
-    // addedDiscountCode && calculateDiscount(); <- I know you can type the following like this, but I prefer the readability of the code below
-    if (addedDiscountCode){
-        calculateDiscount();
-    }
+    
+    addedDiscountCode ? calculateDiscount() : discountSum = 0;
     
     totalSumAfterDiscount = orderSum - discountSum;
 
@@ -376,7 +377,7 @@ function renderOrderedItems(){
         return `                    
         <div class="itemized-line ordered-item">
             <span class="ordered-item-amount">${orderAmount}</span> 
-            <span class="slight-indent">${name}</span>
+            <span class="slight-indent">${name}${orderAmount>1 ? "s" : ""}</span>
             <span class="slight-indent remove-item" data-remove="${id}">remove</span>
             <span class="margin-left-auto">$${(price*orderAmount).toFixed(2)}</span>
         </div>
@@ -408,7 +409,6 @@ function renderDiscount(){
             <span class="tooltip margin-left-auto">- $${discountSum.toFixed(2)}</span> 
             <span class="tooltiptext">${discountPrompt}</span>   
         </div>`            
-
 
     }
 
@@ -471,6 +471,7 @@ function resetOrder(){
     order = [];
     addedDiscountCode = null;
     document.querySelector("#payment-form").reset(); 
+
 }
 
 function clearOrderSection(){
